@@ -51,32 +51,16 @@
 	</target>
 
 	<path id="fbaas.classpath">
-		<pathelement location="${lib.dir}/cassandra-driver-core-${cassandra-driver-core.version}.jar" />
-        <pathelement location="${lib.dir}/cassandra-all-${cassandra-all.version}.jar" />
-        <pathelement location="${lib.dir}/snappy-java-${snappy-java.version}.jar" />
 		<pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar" />
 		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar" />
 		<pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar" />
-        <pathelement location="${lib.dir}/commons-cli-${commons-cli.version}.jar" />
-        <pathelement location="${lib.dir}/guava-${guava.version}.jar" />
-        <pathelement location="${lib.dir}/netty-${netty.version}.jar" />
-        <pathelement location="${lib.dir}/metrics-core-${metrics-core.version}.jar" />
         <pathelement location="${lib.dir}/jackson-core-asl-${jackson-core-asl.version}.jar" />
         <pathelement location="${lib.dir}/jackson-mapper-asl-${jackson-mapper-asl.version}.jar" />
-        <pathelement location="${lib.dir}/libthrift-${libthrift.version}.jar" />
-		<pathelement location="${lib.dir}/github-api-${github-api.version}.jar" />
 		<pathelement location="${lib.dir}/jackson-databind-${jackson-databind.version}.jar" />
 		<pathelement location="${lib.dir}/jackson-core-${jackson-core.version}.jar" />
 		<pathelement location="${lib.dir}/jackson-jaxrs-${jackson-jaxrs.version}.jar" />
 		<pathelement location="${lib.dir}/jackson-xc-${jackson-xc.version}.jar" />
 		<pathelement location="${lib.dir}/jackson-annotations-${jackson-annotations.version}.jar" />
-		<pathelement location="${lib.dir}/commons-codec-${commons-codec.version}.jar" />
-		<pathelement location="${lib.dir}/commons-io-${commons-io.version}.jar" />
-		<pathelement location="${lib.dir}/commons-lang-${commons-lang.version}.jar" />
-		<pathelement location="${lib.dir}/bridge-method-annotation-${bridge-method-annotation.version}.jar" />
-		<pathelement location="${lib.dir}/okhttp-${okhttp.version}.jar" />
-		<pathelement location="${lib.dir}/joda-time-${joda-time.version}.jar" />
-		<pathelement location="${lib.dir}/lzr-${lzr.version}.jar" />
 		<pathelement location="${lib.dir}/javax.servlet-api-${javax.servlet-api.version}.jar" />
 		<pathelement location="${lib.dir}/jersey-core-${jersey-core.version}.jar" />
 		<pathelement location="${lib.dir}/jersey-servlet-${jersey-servlet.version}.jar" />
@@ -92,7 +76,7 @@
         <echo message="    http://search.maven.org/#artifactdetails%7Ccom.mebigfatguy.yank%7Cyank%7C0.4.2%7Cjar"/>
     </target>
     
-	<target name="yank" xmlns:yank="antlib:com.mebigfatguy.yank">
+	<target name="yank" unless="no.yank" xmlns:yank="antlib:com.mebigfatguy.yank">
         <mkdir dir="${lib.dir}" />
         <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" source="true" separateClassifierTypes="true">
             <server url="http://repo1.maven.org/maven2" />

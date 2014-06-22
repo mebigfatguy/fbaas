@@ -1,4 +1,5 @@
 war
 lib
+target
 *.class
 version.properties
