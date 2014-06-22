@@ -1,0 +1,233 @@
+<!-- 
+/** fbaas - a findbugs as a service web application
+  * Copyright 2014 MeBigFatGuy.com 
+  * Copyright 2014 Dave Brosius 
+  * 
+  * Licensed under the Apache License, Version 2.0 (the "License"); 
+  * you may not use this file except in compliance with the License. 
+  * You may obtain a copy of the License at
+  * 
+  * http://www.apache.org/licenses/LICENSE-2.0 
+  * 
+  * Unless required by applicable law or agreed to in writing, 
+  * software distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+  * See the License for the specific language governing permissions and limitations 
+  * under the License. 
+  */ 
+-->
+
+<project name="fbaas" default="info" basedir=".">
+	<property file="${basedir}/user.properties"/>
+	<property file="${basedir}/build.properties"/>
+	<property file="${basedir}/version.properties" />
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="pages.dir" value="${basedir}/pages" />
+	<property name="js.dir" value="${basedir}/js" />
+	<property name="css.dir" value="${basedir}/css" />
+	<property name="img.dir" value="${basedir}/img" />
+	<property name="conf.dir" value="${basedir}/conf" />
+	<property name="bootstrap.dir" value="${conf.dir}/bootstrap" />
+	<property name="target.dir" value="${basedir}/target" />
+	<property name="war.dir" value="${target.dir}/war" />
+	<property name="js.dir" value="${war.dir}/js" />
+	<property name="web-inf.dir" value="${war.dir}/WEB-INF" />
+	<property name="web-inf-lib.dir" value="${web-inf.dir}/lib" />
+	<property name="classes.dir" value="${web-inf.dir}/classes" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="javadoc.dir" value="${target.dir}/javadoc" />
+	<property name="javac.source" value="1.7" />
+	<property name="javac.target" value="1.7" />
+	<property name="javac.deprecation" value="on" />
+	<property name="javac.debug" value="on" />
+
+	<property name="fbaas.version" value="0.2.0" />
+
+	<property name="sonatype.dir" value="${user.home}/.fbaas-${fbaas.version}-sonatype" />
+
+	<target name="clean" description="removes all generated collateral">
+		<delete dir="${target.dir}" />
+	</target>
+
+	<path id="fbaas.classpath">
+		<pathelement location="${lib.dir}/cassandra-driver-core-${cassandra-driver-core.version}.jar" />
+        <pathelement location="${lib.dir}/cassandra-all-${cassandra-all.version}.jar" />
+        <pathelement location="${lib.dir}/snappy-java-${snappy-java.version}.jar" />
+		<pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar" />
+		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar" />
+		<pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar" />
+        <pathelement location="${lib.dir}/commons-cli-${commons-cli.version}.jar" />
+        <pathelement location="${lib.dir}/guava-${guava.version}.jar" />
+        <pathelement location="${lib.dir}/netty-${netty.version}.jar" />
+        <pathelement location="${lib.dir}/metrics-core-${metrics-core.version}.jar" />
+        <pathelement location="${lib.dir}/jackson-core-asl-${jackson-core-asl.version}.jar" />
+        <pathelement location="${lib.dir}/jackson-mapper-asl-${jackson-mapper-asl.version}.jar" />
+        <pathelement location="${lib.dir}/libthrift-${libthrift.version}.jar" />
+		<pathelement location="${lib.dir}/github-api-${github-api.version}.jar" />
+		<pathelement location="${lib.dir}/jackson-databind-${jackson-databind.version}.jar" />
+		<pathelement location="${lib.dir}/jackson-core-${jackson-core.version}.jar" />
+		<pathelement location="${lib.dir}/jackson-jaxrs-${jackson-jaxrs.version}.jar" />
+		<pathelement location="${lib.dir}/jackson-xc-${jackson-xc.version}.jar" />
+		<pathelement location="${lib.dir}/jackson-annotations-${jackson-annotations.version}.jar" />
+		<pathelement location="${lib.dir}/commons-codec-${commons-codec.version}.jar" />
+		<pathelement location="${lib.dir}/commons-io-${commons-io.version}.jar" />
+		<pathelement location="${lib.dir}/commons-lang-${commons-lang.version}.jar" />
+		<pathelement location="${lib.dir}/bridge-method-annotation-${bridge-method-annotation.version}.jar" />
+		<pathelement location="${lib.dir}/okhttp-${okhttp.version}.jar" />
+		<pathelement location="${lib.dir}/joda-time-${joda-time.version}.jar" />
+		<pathelement location="${lib.dir}/lzr-${lzr.version}.jar" />
+		<pathelement location="${lib.dir}/javax.servlet-api-${javax.servlet-api.version}.jar" />
+		<pathelement location="${lib.dir}/jersey-core-${jersey-core.version}.jar" />
+		<pathelement location="${lib.dir}/jersey-servlet-${jersey-servlet.version}.jar" />
+		<pathelement location="${lib.dir}/jersey-bundle-${jersey-bundle.version}.jar" />
+		<pathelement location="${lib.dir}/jersey-json-${jersey-json.version}.jar" />
+	</path>
+	
+	<target name="info">
+        <echo message="fbaas - a findbugs as a server web application"/>
+        <echo message=""/>
+        <echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
+        <echo message="    download yank.jar and place in ant/lib directory"/>
+        <echo message="    http://search.maven.org/#artifactdetails%7Ccom.mebigfatguy.yank%7Cyank%7C0.4.2%7Cjar"/>
+    </target>
+    
+	<target name="yank" xmlns:yank="antlib:com.mebigfatguy.yank">
+        <mkdir dir="${lib.dir}" />
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" source="true" separateClassifierTypes="true">
+            <server url="http://repo1.maven.org/maven2" />
+            <generateVersions propertyFileName="${basedir}/version.properties" />
+        </yank:yank>
+    </target>
+
+	<target name="-init" depends="yank" description="prepares repository for a build">
+		<mkdir dir="${war.dir}" />
+		<mkdir dir="${web-inf.dir}" />
+		<mkdir dir="${web-inf-lib.dir}" />
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${javadoc.dir}" />
+		<mkdir dir="${lib.dir}" />
+	</target>
+
+	<target name="resources" depends="-init" description="copies resources to the war">
+		<copy todir="${web-inf.dir}" file="${conf.dir}/web.xml"/>
+		<copy todir="${web-inf-lib.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+				<exclude name="**/javax.servlet-api-${javax.servlet-api.version}.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${war.dir}">
+			<fileset dir="${pages.dir}">
+				<include name="**/*"/>
+			</fileset>
+
+			<fileset dir="${bootstrap.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${war.dir}/js">
+			<fileset dir="${js.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${war.dir}/css">
+			<fileset dir="${css.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${war.dir}/img">
+			<fileset dir="${img.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+	</target>
+		
+	<target name="compile" depends="-init" description="compiles java files">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" source="${javac.source}"
+			target="${javac.target}" deprecation="${javac.deprecation}" debug="${javac.debug}"
+			includeantruntime="false">
+			<classpath refid="fbaas.classpath" />
+		</javac>
+	</target>
+
+	<target name="srcjar" description="builds the source distribution zip file">
+		<zip destfile="${target.dir}/fbaas-${fbaas.version}-sources.jar">
+			<fileset dir="${basedir}">
+				<exclude name=".settings" />
+				<exclude name=".settings/**/*.*" />
+				<exclude name="target/**/*.*" />
+				<exclude name="lib/**/*.*" />
+				<exclude name="lib/sources" />
+				<exclude name="lib" />
+				<exclude name="**/*.properties"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="javadoc" depends="-init"
+		description="build the javadoc for the project">
+		<javadoc packagenames="com.mebigfatguy.*" sourcepath="${src.dir}"
+			classpathref="fbaas.classpath" destdir="${javadoc.dir}"
+			windowtitle="fbaas api">
+			<doctitle><![CDATA[<h1>fbaas javadoc</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2014 MeBigFatGuy.com. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+	</target>
+
+	<target name="build" depends="clean, -init, resources, compile"
+		description="compiles the code">
+	</target>
+
+	<target name="war" depends="build" description="produces the fbaas war file">
+		<jar destfile="${target.dir}/fbaas-${fbaas.version}.war">
+			<fileset dir="${war.dir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="release" depends="war, srcjar, javadoc" description="prepares everything for a release" />
+	
+	<target name="sonatype" depends="clean, release" description="builds the sonatype bundle">
+        <mkdir dir="${sonatype.dir}"/>
+        <copy todir="${sonatype.dir}" file="${target.dir}/fbaas-${fbaas.version}.war"/>
+        <copy tofile="${sonatype.dir}" file="${target.dir}/fbaas-${fbaas.version}-sources.jar"/>
+        <jar destfile="${sonatype.dir}/fbaas-${fbaas.version}-javadoc.jar" basedir="${target.dir}" includes="javadoc/**"/>
+        <copy tofile="${sonatype.dir}/fbaas-${fbaas.version}.pom" file="${basedir}/pom.xml"/>
+        
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/fbaas-${fbaas.version}.war" />
+        </exec>
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/fbaas-${fbaas.version}.pom" />
+        </exec>
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/fbaas-${fbaas.version}-sources.jar" />
+        </exec>        
+        <exec executable="gpg">
+            <arg value="-abi" />
+            <arg value="${sonatype.dir}/fbaas-${fbaas.version}-javadoc.jar" />
+        </exec>
+        <jar destfile="${sonatype.dir}/bundle.jar" basedir="${sonatype.dir}" includes="fbaas*">
+        </jar>
+        <echo message="" />
+        <echo message="" />
+        <echo message="====================================================================================================================================" />
+        <echo message="sonatype update bundle produced at ${sonatype.dir}/bundle.jar" />
+        <echo message="upload this jar at https://oss.sonatype.org" />
+        <echo message="" />
+        <echo message="see link for details-> https://docs.sonatype.org/display/Repository/Uploading+3rd-party+Artifacts+to+The+Central+Repository" />
+        <echo message="====================================================================================================================================" />
+
+	</target>
+
+</project>
