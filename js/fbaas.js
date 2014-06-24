@@ -13,5 +13,5 @@ $(document).ready(function() {
 });
 
 function findbugs(groupId, artifactId, version, email) {
-	
+	var href = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
 }

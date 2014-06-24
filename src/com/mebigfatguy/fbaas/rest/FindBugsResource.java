@@ -16,17 +16,16 @@
  */
 package com.mebigfatguy.fbaas.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.mebigfatguy.fbaas.Bug;
 import com.mebigfatguy.fbaas.Titles;
 
 
@@ -40,10 +39,9 @@ public class FindBugsResource {
 		return new Titles(request.getLocale());
 	}
 	
-	@GET
-	@Path("/run")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Bug> findBugs() {
-		return new ArrayList<Bug>();
+	@POST
+	@Path("/run/{groupId}/{artifactId}/{version}/{email}")
+	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version, @PathParam("email") String email) {
+		return Response.ok().build();
 	}
 }
