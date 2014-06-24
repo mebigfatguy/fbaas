@@ -98,6 +98,7 @@
 		<copy todir="${web-inf-lib.dir}">
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar"/>
+				<exclude name="sources/*.jar"/>
 				<exclude name="**/javax.servlet-api-${javax.servlet-api.version}.jar"/>
 			</fileset>
 		</copy>
