@@ -18,6 +18,8 @@ package com.mebigfatguy.fbaas;
 
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /** fbaas - FindBugs as a Service. 
  * Copyright 2014 MeBigFatGuy.com 
  * Copyright 2014 Dave Brosius 
@@ -35,6 +37,7 @@ import java.util.Locale;
  * under the License. 
  */
 
+@XmlRootElement()
 public class Titles {
 	private String title;
 	private String description;
