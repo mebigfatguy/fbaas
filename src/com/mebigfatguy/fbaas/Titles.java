@@ -16,6 +16,8 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.util.Locale;
+
 /** fbaas - FindBugs as a Service. 
  * Copyright 2014 MeBigFatGuy.com 
  * Copyright 2014 Dave Brosius 
@@ -41,8 +43,13 @@ public class Titles {
 	private String version;
 	private String email;
 	
-	public Titles() {
-		
+	public Titles(Locale locale) {
+		title = Bundle.getString(locale, Bundle.Title);
+		description = Bundle.getString(locale, Bundle.Description);
+		groupId = Bundle.getString(locale, Bundle.GroupId);
+		artifactId = Bundle.getString(locale, Bundle.ArtifactId);
+		version = Bundle.getString(locale, Bundle.Version);
+		email = Bundle.getString(locale, Bundle.Email);
 	}
 	
 	public String getTitle() {

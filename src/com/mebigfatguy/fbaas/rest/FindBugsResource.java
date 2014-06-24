@@ -19,9 +19,11 @@ package com.mebigfatguy.fbaas.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.mebigfatguy.fbaas.Bug;
@@ -34,10 +36,8 @@ public class FindBugsResource {
 	@GET
 	@Path("/text")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Titles getText() {
-		Titles t = new Titles();
-		
-		return t;
+	public Titles getText(@Context HttpServletRequest request) {
+		return new Titles(request.getLocale());
 	}
 	
 	@GET
