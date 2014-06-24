@@ -14,36 +14,24 @@
  * See the License for the specific language governing permissions and limitations 
  * under the License. 
  */
-package com.mebigfatguy.fbaas.rest;
 
-import java.util.ArrayList;
-import java.util.List;
+package com.mebigfatguy.fbaas;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-import com.mebigfatguy.fbaas.Bug;
-import com.mebigfatguy.fbaas.Titles;
+public enum Bundle {
 
-
-@Path("/findbugs")
-public class FindBugsResource {
-
-	@GET
-	@Path("/text")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Titles getText() {
-		Titles t = new Titles();
-		
-		return t;
-	}
+	Title,
+	Description,
+	GroupId,
+	ArtifactId,
+	Version,
+	Email;;
 	
-	@GET
-	@Path("/run")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Bug> findBugs() {
-		return new ArrayList<Bug>();
+	public static String getString(Locale locale, Bundle key) {
+		
+		ResourceBundle bundle = ResourceBundle.getBundle("com/mebigfatguy/fbaas/bundle", locale);
+		return bundle.getString(key.name());
 	}
 }

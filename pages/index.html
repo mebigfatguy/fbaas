@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+
+</head>
+<body>
+
+	<div class="container">
+		<h1></h1>
+		<h4></h4>
+
+		<div class="span12">
+			<table id="artifact" class="table">
+				<tr><th id="groupIdTitle"></th><td><input id="groupId" type="text"/></td></tr>
+				<tr><th id="artifactIdTitle"></th><td><input id="artifactId" type="text"/></td></tr>
+				<tr><th id="versionTitle"></th><td><input id="version" type="text"/></td></tr>
+				<tr><th id="emailTitle"></th><td><input id="email" type="text"/></td></tr>						
+			</table>
+			<input type="submit" name="FindBugs" onClick="javascript:findbugs($( '#groupId' ), $( '#artifactId' ), $( '#version' ), $( '#email' ))"/>
+		</div>
+
+	</div>
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/fbaas.js"></script>
+</body>
+</html>
