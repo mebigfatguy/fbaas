@@ -16,6 +16,9 @@
  */
 package com.mebigfatguy.fbaas.rest;
 
+import java.util.concurrent.ArrayBlockingQueue;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,12 +29,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.mebigfatguy.fbaas.FBJob;
 import com.mebigfatguy.fbaas.Titles;
 
 
 @Path("/findbugs")
 public class FindBugsResource {
-
+	
+	@Context 
+	ServletContext context;
+	
 	@GET
 	@Path("/text")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +49,11 @@ public class FindBugsResource {
 	@POST
 	@Path("/run/{groupId}/{artifactId}/{version}/{email}")
 	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version, @PathParam("email") String email) {
+		FBJob job = new FBJob(groupId, artifactId, version, email);
+		
+		ArrayBlockingQueue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
+		queue.add(job);
+		
 		return Response.ok().build();
 	}
 }
