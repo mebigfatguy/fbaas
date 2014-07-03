@@ -51,6 +51,7 @@ public class FindBugsResource {
 	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version, @PathParam("email") String email) {
 		FBJob job = new FBJob(groupId, artifactId, version, email);
 		
+		@SuppressWarnings("unchecked")
 		ArrayBlockingQueue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
 		queue.add(job);
 		
