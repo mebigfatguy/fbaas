@@ -33,7 +33,7 @@ public class WebAppContextListener implements ServletContextListener {
 	private ArrayBlockingQueue<FBJob> queue;
 	
 	@Override
-	public void contextDestroyed(ServletContextEvent event) {
+	public void contextInitialized(ServletContextEvent event) {
 		try {
 			queue = new ArrayBlockingQueue<FBJob>(10000);
 			event.getServletContext().setAttribute("queue", queue);
@@ -43,6 +43,6 @@ public class WebAppContextListener implements ServletContextListener {
 	}
 
 	@Override
-	public void contextInitialized(ServletContextEvent event) {
+	public void contextDestroyed(ServletContextEvent event) {
 	}
 }
