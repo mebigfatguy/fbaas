@@ -1,0 +1,18 @@
+<Project projectName="fbaas">
+  <Jar>./target/war/WEB-INF/classes</Jar>
+  <AuxClasspathEntry>./lib/jackson-annotations-2.2.3.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jackson-core-2.2.3.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jackson-core-asl-1.9.13.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jackson-databind-2.2.3.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jackson-jaxrs-1.9.13.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jackson-mapper-asl-1.9.13.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/javax.servlet-api-3.1.0.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jersey-bundle-1.18.1.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jersey-core-1.18.1.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jersey-json-1.18.1.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/jersey-servlet-1.18.1.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-classic-1.1.2.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/logback-core-1.1.2.jar</AuxClasspathEntry>
+  <AuxClasspathEntry>./lib/slf4j-api-1.7.7.jar</AuxClasspathEntry>
+  <SrcDir>./src</SrcDir>
+</Project>
