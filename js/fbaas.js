@@ -5,10 +5,10 @@ $(document).ready(function() {
 		$( 'title' ).append(data.title);
 		$( 'h1' ).append(data.title);
 		$( 'h4' ).append(data.description);
-		$( '#groupIdTitle' ).append(data.getGroupId());
-		$( '#artifactTitle' ).append(data.getArtifactId());
-		$( '#version' ).append(data.getVersion());
-		$( '#email' ).append(data.getEmail());
+		$( '#groupId' ).val(data.groupId);
+		$( '#artifactId' ).val(data.artifactId);
+		$( '#version' ).val(data.version);
+		$( '#email' ).val(data.email);
 	});
 });
 
