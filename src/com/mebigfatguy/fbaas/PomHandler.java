@@ -16,15 +16,38 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PomHandler {
 
 	private FBJob job;
+	private Path jarDirectory;
+	private List<String> processedJars;
 	
-	public PomHandler(FBJob fbJob) {
+	public PomHandler(FBJob fbJob, Path jarDir) {
 		job = fbJob;
+		jarDirectory = jarDir;
+		processedJars = new ArrayList<>();
 	}
 	
 	public void processPom() {
+		
+		Path pomFile = downloadPom(job.getGroupId(), job.getArtifactId(), job.getVersion());
+		parsePom(pomFile);
+	}
+	
+	private Path downloadPom(String groupId, String artifactId, String version) {
+		return null;
+	}
+	
+	private void parsePom(Path pomFile) {
+		
+	}
+	
+	private void downloadURL(URL sourceURL, URL destURL) {
 		
 	}
 }

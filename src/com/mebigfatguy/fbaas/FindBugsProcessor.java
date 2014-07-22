@@ -63,7 +63,7 @@ public class FindBugsProcessor implements Runnable {
 	private Path loadJars(FBJob job) throws IOException {
 		Path jarDir = Files.createTempDirectory("fb");
 		
-		PomHandler handler = new PomHandler(job);
+		PomHandler handler = new PomHandler(job, jarDir);
 		handler.processPom();
 		
 		return jarDir;
