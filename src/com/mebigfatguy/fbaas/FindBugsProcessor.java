@@ -16,7 +16,10 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.slf4j.Logger;
@@ -36,20 +39,33 @@ public class FindBugsProcessor implements Runnable {
 		try {
 			while (!Thread.interrupted()) {
 				FBJob job = queue.take();
+				Path jarDirectory = null;
 				
 				try {
+					jarDirectory = loadJars(job);
+					
 					ClassLoader l = new FindBugsClassLoader();
 					Class<?> cls = l.loadClass("edu.umd.cs.findbugs.FindBugs2");
 					Method m = cls.getMethod("main",  String[].class);
 					m.invoke(null);
 				} catch (Exception e) {
 					LOGGER.error("Failed running findbugs on job {}", job);
-					
+				} finally {
+					if (jarDirectory != null) {
+						Files.delete(jarDirectory);
+					}
 				}
-				
-				
 			}
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | IOException e) {
 		}
+	}
+	
+	private Path loadJars(FBJob job) throws IOException {
+		Path jarDir = Files.createTempDirectory("fb");
+		
+		PomHandler handler = new PomHandler(job);
+		handler.processPom();
+		
+		return jarDir;
 	}
 }
