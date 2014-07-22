@@ -14,7 +14,7 @@ $(document).ready(function() {
 
 function findbugs(groupId, artifactId, version, email) {
 	var href = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
-	href = href + "rest/findbugs/run/" + groupId + "/" + artifactId + "/" + version + "/" + email;
+	href = href + "rest/findbugs/run/" + encodeURIComponent(groupId) + "/" + encodeURIComponent(artifactId) + "/" + encodeURIComponent(version) + "/" + encodeURIComponent(email);
 	$.getJSON(href, function(data) {
 	});
 }
