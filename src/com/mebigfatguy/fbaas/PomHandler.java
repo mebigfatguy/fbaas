@@ -16,13 +16,19 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mebigfatguy.fbaas.downloader.Downloader;
+
 public class PomHandler {
 
+	private static final String MAVEN_CENTRAL_ROOT_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
+	
 	private FBJob job;
 	private Path jarDirectory;
 	private List<String> processedJars;
@@ -33,21 +39,28 @@ public class PomHandler {
 		processedJars = new ArrayList<>();
 	}
 	
-	public void processPom() {
+	public void processPom() throws MalformedURLException {
 		
 		Path pomFile = downloadPom(job.getGroupId(), job.getArtifactId(), job.getVersion());
 		parsePom(pomFile);
 	}
 	
-	private Path downloadPom(String groupId, String artifactId, String version) {
-		return null;
+	private Path downloadPom(String groupId, String artifactId, String version) throws MalformedURLException {
+		URL u = new URL(String.format(MAVEN_CENTRAL_ROOT_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
+		Path pomFile = Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".pom");
+		
+		Thread t = new Thread(new Downloader(u, pomFile));
+		t.start();
+		
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+		}
+		
+		return pomFile;
 	}
 	
 	private void parsePom(Path pomFile) {
-		
-	}
-	
-	private void downloadURL(URL sourceURL, URL destURL) {
 		
 	}
 }
