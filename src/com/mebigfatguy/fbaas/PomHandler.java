@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +31,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.mebigfatguy.fbaas.downloader.Downloader;
+
 public class PomHandler {
 
-	private static final String MAVEN_CENTRAL_ROOT_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
+	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
+	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
 	private FBJob job;
 	private Path jarDirectory;
@@ -50,15 +54,25 @@ public class PomHandler {
 	}
 	
 	private void parsePom(String groupId, String artifactId, String version) throws IOException {
-		URL u = new URL(String.format(MAVEN_CENTRAL_ROOT_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
-
-		try (BufferedInputStream bis = new BufferedInputStream(u.openStream())) {
+		
+		URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
+		Downloader dl = new Downloader(jarURL, Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar"));
+		Thread th = new Thread(dl);
+		th.start();
+		
+		URL pomUrl = new URL(String.format(MAVEN_CENTRAL_POM_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
+		try (BufferedInputStream bis = new BufferedInputStream(pomUrl.openStream())) {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			SAXHandler handler = new SAXHandler();
 			reader.setContentHandler(handler);
 			reader.parse(new InputSource(bis));
 		} catch (SAXException e) {
 			throw new IOException(String.format("Failed parsing pom: %s %s %s", groupId, artifactId, version), e);
+		}
+		
+		try {
+			th.join();
+		} catch (InterruptedException e) {
 		}
 	}
 	
