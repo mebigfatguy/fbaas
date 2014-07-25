@@ -29,18 +29,22 @@ public class FindBugsClassLoader extends ClassLoader {
 	public FindBugsClassLoader() {
 	}
 	
+	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		return loader.loadClass(name);
 	}
 	
+	@Override
 	public URL getResource(String name) {
 		return loader.getResource(name);
 	}
 	
+	@Override
 	public Enumeration<URL> getResources(String name) throws IOException {
 		return loader.getResources(name);
 	}
 
+	@Override
 	public InputStream getResourceAsStream(String name) {
 		return loader.getResourceAsStream(name);
 	}
