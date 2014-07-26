@@ -18,6 +18,7 @@ package com.mebigfatguy.fbaas;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -37,37 +40,25 @@ import com.mebigfatguy.fbaas.downloader.Downloader;
 
 public class PomHandler {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(PomHandler.class);
+	
 	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
 	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
 	private FBJob job;
 	private Path jarDirectory;
-	private Set<String> processedJars;
-
 	
 	public PomHandler(FBJob fbJob, Path jarDir) {
 		job = fbJob;
 		jarDirectory = jarDir;
-		processedJars = new HashSet<>();
 	}
 	
 	public void processPom() throws IOException {
 		parsePom(job.getGroupId(), job.getArtifactId(), job.getVersion());
+		downloadJar(job.getGroupId(), job.getArtifactId(), job.getVersion());
 	}
 	
 	private void parsePom(String groupId, String artifactId, String version) throws IOException {
-		
-		String process = groupId + ":" + artifactId + ":" + version;
-		if (processedJars.contains(process)) {
-			return;
-		}
-		processedJars.add(process);
-		
-		URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
-		Downloader dl = new Downloader(jarURL, Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar"));
-		Thread th = new Thread(dl);
-		th.start();
-		
 		URL pomUrl = new URL(String.format(MAVEN_CENTRAL_POM_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
 		try (BufferedInputStream bis = new BufferedInputStream(pomUrl.openStream())) {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -75,10 +66,17 @@ public class PomHandler {
 			reader.setContentHandler(handler);
 			reader.parse(new InputSource(bis));
 		} catch (SAXException e) {
-			throw new IOException(String.format("Failed parsing pom: %s %s %s", groupId, artifactId, version), e);
+			LOGGER.error("Failed downloading pom for {} {} {}", groupId, artifactId, version, e);
 		}
-		
+	}
+	
+	private void downloadJar(String groupId, String artifactId, String version) throws MalformedURLException {
 		try {
+			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
+			Downloader dl = new Downloader(jarURL, Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar"));
+			Thread th = new Thread(dl);
+			th.start();
+	
 			th.join();
 		} catch (InterruptedException e) {
 		}
@@ -115,7 +113,7 @@ public class PomHandler {
 				} else if (innerTag.equalsIgnoreCase("version")) {
 					version = text.toString();
 				} else if (innerTag.equalsIgnoreCase("dependency")) {
-					parsePom(groupId, artifactId, version);
+					downloadJar(groupId, artifactId, version);
 				}
 			} catch (IOException e) {
 				throw new SAXException("Failed downloading inner pom", e);
