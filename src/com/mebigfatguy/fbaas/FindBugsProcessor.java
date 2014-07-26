@@ -49,6 +49,8 @@ public class FindBugsProcessor implements Runnable {
 
 				} catch (Exception e) {
 					LOGGER.error("Failed running findbugs on job {}", job, e);
+				} catch (Throwable t) {
+					LOGGER.error("Failed running findbugs on job {}", job, t);
 				} finally {
 					if (jarDirectory != null) {
 						Files.delete(jarDirectory);
