@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mebigfatguy.fbaas.FBJob;
 import com.mebigfatguy.fbaas.FindBugsProcessor;
+import com.mebigfatguy.fbaas.FindBugsSecurityManager;
 
 public class WebAppContextListener implements ServletContextListener {
 
@@ -37,6 +38,7 @@ public class WebAppContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
+			System.setSecurityManager(new FindBugsSecurityManager());
 			queue = new ArrayBlockingQueue<FBJob>(10000);
 			event.getServletContext().setAttribute("queue", queue);
 			processor = new Thread(new FindBugsProcessor(queue));

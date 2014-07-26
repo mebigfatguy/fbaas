@@ -19,6 +19,7 @@ package com.mebigfatguy.fbaas;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.slf4j.Logger;
@@ -45,7 +46,10 @@ public class FindBugsProcessor implements Runnable {
 				try {
 					jarDirectory = loadJars(job);
 					
-					FindBugs2.main(new String[0]);
+					Path fbpFile = buildProjectFile(job, jarDirectory);
+					
+					String[] args = { "-project", fbpFile.toString() };
+					FindBugs2.main(args);
 
 				} catch (Exception e) {
 					LOGGER.error("Failed running findbugs on job {}", job, e);
@@ -60,7 +64,7 @@ public class FindBugsProcessor implements Runnable {
 		} catch (InterruptedException | IOException e) {
 		}
 	}
-	
+
 	private static Path loadJars(FBJob job) throws IOException {
 		
 		Path jarDir = Files.createTempDirectory("fb");
@@ -69,5 +73,13 @@ public class FindBugsProcessor implements Runnable {
 		handler.processPom();
 		
 		return jarDir;
+	}
+	
+	
+	private static Path buildProjectFile(FBJob job, Path jarDirectory) {
+		Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
+		
+		
+		return fbpFile;
 	}
 }
