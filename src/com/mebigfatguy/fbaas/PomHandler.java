@@ -22,7 +22,9 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -40,13 +42,13 @@ public class PomHandler {
 	
 	private FBJob job;
 	private Path jarDirectory;
-	private List<String> processedJars;
+	private Set<String> processedJars;
 
 	
 	public PomHandler(FBJob fbJob, Path jarDir) {
 		job = fbJob;
 		jarDirectory = jarDir;
-		processedJars = new ArrayList<>();
+		processedJars = new HashSet<>();
 	}
 	
 	public void processPom() throws IOException {
@@ -54,6 +56,12 @@ public class PomHandler {
 	}
 	
 	private void parsePom(String groupId, String artifactId, String version) throws IOException {
+		
+		String process = groupId + ":" + artifactId + ":" + version;
+		if (processedJars.contains(process)) {
+			return;
+		}
+		processedJars.add(process);
 		
 		URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
 		Downloader dl = new Downloader(jarURL, Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar"));

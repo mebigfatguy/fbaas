@@ -17,13 +17,14 @@
 package com.mebigfatguy.fbaas;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.umd.cs.findbugs.FindBugs2;
 
 public class FindBugsProcessor implements Runnable {
 
@@ -44,12 +45,10 @@ public class FindBugsProcessor implements Runnable {
 				try {
 					jarDirectory = loadJars(job);
 					
-					ClassLoader l = new FindBugsClassLoader();
-					Class<?> cls = l.loadClass("edu.umd.cs.findbugs.FindBugs2");
-					Method m = cls.getMethod("main",  String[].class);
-					m.invoke(null);
+					FindBugs2.main(new String[0]);
+
 				} catch (Exception e) {
-					LOGGER.error("Failed running findbugs on job {}", job);
+					LOGGER.error("Failed running findbugs on job {}", job, e);
 				} finally {
 					if (jarDirectory != null) {
 						Files.delete(jarDirectory);
@@ -60,7 +59,8 @@ public class FindBugsProcessor implements Runnable {
 		}
 	}
 	
-	private Path loadJars(FBJob job) throws IOException {
+	private static Path loadJars(FBJob job) throws IOException {
+		
 		Path jarDir = Files.createTempDirectory("fb");
 		
 		PomHandler handler = new PomHandler(job, jarDir);
