@@ -20,17 +20,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mebigfatguy.fbaas.fbp.GenerateFBP;
 
 import edu.umd.cs.findbugs.FindBugs2;
 
 public class FindBugsProcessor implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FindBugsProcessor.class);
-	private ArrayBlockingQueue<FBJob> queue;
+	private final ArrayBlockingQueue<FBJob> queue;
 	
 	public FindBugsProcessor(ArrayBlockingQueue<FBJob> q) {
 		queue = q;
@@ -46,7 +52,7 @@ public class FindBugsProcessor implements Runnable {
 				try {
 					jarDirectory = loadJars(job);
 					
-					Path fbpFile = buildProjectFile(job, jarDirectory);
+					Path fbpFile = buildProjectFile(job, jarDirectory);					
 					
 					String[] args = { "-project", fbpFile.toString() };
 					FindBugs2.main(args);
@@ -76,9 +82,12 @@ public class FindBugsProcessor implements Runnable {
 	}
 	
 	
-	private static Path buildProjectFile(FBJob job, Path jarDirectory) {
+	private static Path buildProjectFile(FBJob job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
 		Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
 		
+		GenerateFBP gen = new GenerateFBP(Paths.get(jarDirectory.toString(), job.getArtifactId()), Paths.get("a.a"), new ArrayList<Path>());
+		gen.generate(fbpFile);
+
 		
 		return fbpFile;
 	}

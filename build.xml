@@ -131,6 +131,7 @@
 		<copy todir="${classes.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.properties"/>
+				<include name="**/*.xsl"/>
 			</fileset>
 		</copy>
 	</target>
