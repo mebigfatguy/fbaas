@@ -38,6 +38,7 @@ public class WebAppContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
+			System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			System.setSecurityManager(new FindBugsSecurityManager());
 			queue = new ArrayBlockingQueue<FBJob>(10000);
 			event.getServletContext().setAttribute("queue", queue);

@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/annotations-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/bcel-findbugs-6.0.jar"/>
 	<classpathentry kind="lib" path="lib/findbugs-3.0.0.jar" sourcepath="/home/dave/.m2/repository/com/google/code/findbugs/findbugs/3.0.0/findbugs-3.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.2.jar"/>
 	<classpathentry kind="output" path="target/war/WEB-INF/classes"/>
 </classpath>

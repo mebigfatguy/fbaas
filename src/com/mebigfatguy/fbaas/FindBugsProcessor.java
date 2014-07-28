@@ -17,10 +17,15 @@
 package com.mebigfatguy.fbaas;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -83,12 +88,28 @@ public class FindBugsProcessor implements Runnable {
 	
 	
 	private static Path buildProjectFile(FBJob job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
-		Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
+		final Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
+		final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + ".jar");
+		final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + "-sources.jar");
 		
-		GenerateFBP gen = new GenerateFBP(Paths.get(jarDirectory.toString(), job.getArtifactId()), Paths.get("a.a"), new ArrayList<Path>());
+		final List<Path> auxList = new ArrayList<Path>();
+		
+		FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				if (!file.equals(jarPath) && (!file.equals(srcPath))) {
+					auxList.add(file);
+				}
+				return FileVisitResult.CONTINUE;
+			}			
+		};
+		
+		Files.walkFileTree(jarDirectory, fv);
+		
+		GenerateFBP gen = new GenerateFBP(jarPath, srcPath, auxList);
 		gen.generate(fbpFile);
 
-		
 		return fbpFile;
 	}
 }

@@ -23,9 +23,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +43,8 @@ public class PomHandler {
 	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
 	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
-	private FBJob job;
-	private Path jarDirectory;
+	private final FBJob job;
+	private final Path jarDirectory;
 	
 	public PomHandler(FBJob fbJob, Path jarDir) {
 		job = fbJob;
@@ -84,8 +82,8 @@ public class PomHandler {
 	
 	class SAXHandler extends DefaultHandler {
 
-		private List<String> openTags;
-		private StringBuilder text;
+		private final List<String> openTags;
+		private final StringBuilder text;
 		private String groupId;
 		private String artifactId;
 		private String version;

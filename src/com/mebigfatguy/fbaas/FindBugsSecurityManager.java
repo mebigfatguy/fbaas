@@ -95,6 +95,7 @@ public class FindBugsSecurityManager extends SecurityManager {
 	}
 
 	@Override
+	@Deprecated
 	public void checkMulticast(InetAddress maddr, byte ttl) {
 	}
 
