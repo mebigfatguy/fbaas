@@ -68,7 +68,18 @@ public class FindBugsProcessor implements Runnable {
 					LOGGER.error("Failed running findbugs on job {}", job, t);
 				} finally {
 					if (jarDirectory != null) {
+						FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
+
+							@Override
+							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+								Files.delete(file);
+								return FileVisitResult.CONTINUE;
+							}			
+						};
+						
+						Files.walkFileTree(jarDirectory, fv);
 						Files.delete(jarDirectory);
+						
 					}
 				}
 			}
