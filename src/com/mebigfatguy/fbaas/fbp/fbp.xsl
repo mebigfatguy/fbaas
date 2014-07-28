@@ -8,14 +8,13 @@
 	<xsl:param name="fbp_jar"/>
 	<xsl:param name="fbp_src"/>
 	<xsl:param name="fbp_aux"/>
-	<xsl:output indent="yes" method="xml" xalan:indent-amount="4" />
-	
+	<xsl:output indent="yes" method="xml" xalan:indent-amount="4" omit-xml-declaration="yes" />
 	<xsl:template match = "/">
 
 		<xsl:element name="Project">
 			<xsl:attribute name="projectName"><xsl:value-of select="$fbp_name"/></xsl:attribute>
 			<xsl:element name="Jar">
-				<xsl:value-of select="$fbp_name"/>
+				<xsl:value-of select="$fbp_jar"/>
 			</xsl:element>
 			<xsl:element name="SrcDir">
 				<xsl:value-of select="$fbp_src"/>
