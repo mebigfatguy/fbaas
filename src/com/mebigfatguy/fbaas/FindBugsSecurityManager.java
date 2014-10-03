@@ -108,6 +108,7 @@ public class FindBugsSecurityManager extends SecurityManager {
 	}
 
 	@Override
+	@Deprecated
 	public boolean checkTopLevelWindow(Object window) {
 		return true;
 	}
@@ -117,10 +118,12 @@ public class FindBugsSecurityManager extends SecurityManager {
 	}
 
 	@Override
+	@Deprecated
 	public void checkSystemClipboardAccess() {
 	}
 
 	@Override
+	@Deprecated
 	public void checkAwtEventQueueAccess() {
 	}
 
@@ -137,6 +140,7 @@ public class FindBugsSecurityManager extends SecurityManager {
 	}
 
 	@Override
+	@Deprecated
 	public void checkMemberAccess(Class<?> clazz, int which) {
 	}
 
