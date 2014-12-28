@@ -20,13 +20,11 @@ public class FBJob {
 	private String groupId;
 	private String artifactId;
 	private String version;
-	private String email;
 	
-	public FBJob(String groupId, String artifactId, String version, String email) {
+	public FBJob(String groupId, String artifactId, String version) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
-		this.email = email;
 	}
 
 	public String getGroupId() {
@@ -39,9 +37,5 @@ public class FBJob {
 
 	public String getVersion() {
 		return version;
-	}
-
-	public String getEmail() {
-		return email;
 	}
 }

@@ -16,6 +16,7 @@
  */
 package com.mebigfatguy.fbaas.rest;
 
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.servlet.ServletContext;
@@ -46,12 +47,12 @@ public class FindBugsResource {
 	}
 	
 	@GET
-	@Path("/run/{groupId}/{artifactId}/{version}/{email}")
-	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version, @PathParam("email") String email) {
-		FBJob job = new FBJob(groupId, artifactId, version, email);
+	@Path("/run/{groupId}/{artifactId}/{version}")
+	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version) {
+		FBJob job = new FBJob(groupId, artifactId, version);
 		
 		@SuppressWarnings("unchecked")
-		ArrayBlockingQueue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
+		Queue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
 		queue.add(job);
 		
 		return Response.ok().build();
