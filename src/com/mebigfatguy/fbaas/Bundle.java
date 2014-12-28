@@ -27,7 +27,7 @@ public enum Bundle {
 	GroupId,
 	ArtifactId,
 	Version,
-	Email;;
+	Processing;
 	
 	public static String getString(Locale locale, Bundle key) {
 		

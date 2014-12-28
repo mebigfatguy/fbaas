@@ -16,5 +16,6 @@ function findbugs(groupId, artifactId, version) {
 	var href = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
 	href = href + "rest/findbugs/run/" + encodeURIComponent(groupId) + "/" + encodeURIComponent(artifactId) + "/" + encodeURIComponent(version);
 	$.getJSON(href, function(data) {
+		$( 'h2' ).append(data.title);
 	});
 }

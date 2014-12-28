@@ -20,6 +20,9 @@ import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /** fbaas - FindBugs as a Service. 
  * Copyright 2014 MeBigFatGuy.com 
  * Copyright 2014 Dave Brosius 
@@ -44,7 +47,6 @@ public class Titles {
 	private String groupId;
 	private String artifactId;
 	private String version;
-	private String email;
 	
 	public Titles(Locale locale) {
 		title = Bundle.getString(locale, Bundle.Title);
@@ -52,27 +54,30 @@ public class Titles {
 		groupId = Bundle.getString(locale, Bundle.GroupId);
 		artifactId = Bundle.getString(locale, Bundle.ArtifactId);
 		version = Bundle.getString(locale, Bundle.Version);
-		email = Bundle.getString(locale, Bundle.Email);
 	}
 	
 	public String getTitle() {
 		return title;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	public String getGroupId() {
 		return groupId;
 	}
+	
 	public String getArtifactId() {
 		return artifactId;
 	}
+	
 	public String getVersion() {
 		return version;
 	}
-	public String getEmail() {
-		return email;
+	
+	@Override
+	public String toString() {
+	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
-	
-	
 }

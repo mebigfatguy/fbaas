@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mebigfatguy.fbaas.FBJob;
 import com.mebigfatguy.fbaas.FindBugsProcessor;
+import com.mebigfatguy.fbaas.FindBugsResultsProcessor;
 import com.mebigfatguy.fbaas.FindBugsSecurityManager;
 
 public class WebAppContextListener implements ServletContextListener {
@@ -40,8 +41,13 @@ public class WebAppContextListener implements ServletContextListener {
 		try {
 			System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			System.setSecurityManager(new FindBugsSecurityManager());
+			
+			FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
+			event.getServletContext().setAttribute("results", resultsProcessor);
+			
 			queue = new ArrayBlockingQueue<FBJob>(10000);
 			event.getServletContext().setAttribute("queue", queue);
+			
 			processor = new Thread(new FindBugsProcessor(queue));
 			processor.start();
 		} catch (Exception e) {

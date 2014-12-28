@@ -30,6 +30,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.mebigfatguy.fbaas.FBJob;
+import com.mebigfatguy.fbaas.FindBugsResultsProcessor;
+import com.mebigfatguy.fbaas.Results;
 import com.mebigfatguy.fbaas.Titles;
 
 
@@ -48,13 +50,18 @@ public class FindBugsResource {
 	
 	@GET
 	@Path("/run/{groupId}/{artifactId}/{version}")
-	public Response findBugs(@PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version) {
+	public Response findBugs(@Context HttpServletRequest request, @PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version) {
 		FBJob job = new FBJob(groupId, artifactId, version);
 		
-		@SuppressWarnings("unchecked")
-		Queue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
-		queue.add(job);
+		FindBugsResultsProcessor processor = (FindBugsResultsProcessor) context.getAttribute("results");
+		Results r = processor.getResults(request.getLocale(), job);
 		
-		return Response.ok().build();
+		if (r.getBugs() == null) {
+    		@SuppressWarnings("unchecked")
+    		Queue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
+    		queue.add(job);
+		}
+		
+		return Response.ok(r).build();
 	}
 }
