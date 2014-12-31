@@ -52,36 +52,40 @@ public class FindBugsProcessor implements Runnable {
 		try {
 			while (!Thread.interrupted()) {
 				FBJob job = queue.take();
-				Path jarDirectory = null;
 				
-				try {
-					jarDirectory = loadJars(job);
-					
-					Path fbpFile = buildProjectFile(job, jarDirectory);
-					Path out = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".xml");
-					
-					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
-					FindBugs2.main(args);
-
-				} catch (Exception e) {
-					LOGGER.error("Failed running findbugs on job {}", job, e);
-				} catch (Throwable t) {
-					LOGGER.error("Failed running findbugs on job {}", job, t);
-				} finally {
-					if (jarDirectory != null) {
-						FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
-
-							@Override
-							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-								Files.delete(file);
-								return FileVisitResult.CONTINUE;
-							}			
-						};
-						
-						Files.walkFileTree(jarDirectory, fv);
-						Files.delete(jarDirectory);
-						
-					}
+				if (!Status.isProcessing(job) && !Status.hasReport(job)) {
+				    Status.setProcessing(job);
+    				Path jarDirectory = null;
+    				
+    				try {
+    					jarDirectory = loadJars(job);
+    					
+    					Path fbpFile = buildProjectFile(job, jarDirectory);
+    					Path out = Paths.get(Status.getReportDir().toString(), job.toString() + ".xml");
+    					
+    					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
+    					FindBugs2.main(args);
+    
+    				} catch (Exception e) {
+    					LOGGER.error("Failed running findbugs on job {}", job, e);
+    				} catch (Throwable t) {
+    					LOGGER.error("Failed running findbugs on job {}", job, t);
+    				} finally {
+    					if (jarDirectory != null) {
+    						FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
+    
+    							@Override
+    							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+    								Files.delete(file);
+    								return FileVisitResult.CONTINUE;
+    							}			
+    						};
+    						
+    						Files.walkFileTree(jarDirectory, fv);
+    						Files.delete(jarDirectory);
+    						
+    					}
+    				}
 				}
 			}
 		} catch (InterruptedException | IOException e) {

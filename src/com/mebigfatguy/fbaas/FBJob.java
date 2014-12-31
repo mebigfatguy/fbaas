@@ -16,6 +16,9 @@
  */
 package com.mebigfatguy.fbaas;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class FBJob {
 	private String groupId;
 	private String artifactId;
@@ -37,5 +40,10 @@ public class FBJob {
 
 	public String getVersion() {
 		return version;
+	}
+	
+	@Override
+	public String toString() {
+	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

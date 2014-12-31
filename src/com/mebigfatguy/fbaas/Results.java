@@ -17,7 +17,6 @@
 package com.mebigfatguy.fbaas;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
