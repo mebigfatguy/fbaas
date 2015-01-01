@@ -17,7 +17,6 @@
 package com.mebigfatguy.fbaas.rest;
 
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +57,7 @@ public class FindBugsResource {
 		
 		if (r.getBugs() == null) {
     		@SuppressWarnings("unchecked")
-    		Queue<FBJob> queue = (ArrayBlockingQueue<FBJob>) context.getAttribute("queue");
+    		Queue<FBJob> queue = (Queue<FBJob>) context.getAttribute("queue");
     		queue.add(job);
 		}
 		
