@@ -17,6 +17,7 @@
 
 package com.mebigfatguy.fbaas;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -27,11 +28,18 @@ public enum Bundle {
 	GroupId,
 	ArtifactId,
 	Version,
-	Processing;
+	Starting,
+	Processing,
+	Complete;
 	
-	public static String getString(Locale locale, Bundle key) {
+	public static String getString(Locale locale, Bundle key, Object... parms) {
 		
 		ResourceBundle bundle = ResourceBundle.getBundle("com/mebigfatguy/fbaas/bundle", locale);
-		return bundle.getString(key.name());
+		String fmt = bundle.getString(key.name());
+		if ((parms == null) || (parms.length == 0)) {
+		    return fmt;
+		}
+		
+		return MessageFormat.format(fmt, parms);
 	}
 }

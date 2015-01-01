@@ -38,7 +38,7 @@ public class Status {
     }
     
     public static boolean isProcessing(FBJob job) {
-        File procFile = new File(PROCESSING_DIR, job.toString());
+        File procFile = new File(PROCESSING_DIR, job.fileName());
         if (!procFile.exists() || !procFile.isFile()) {
             return false;
         }
@@ -51,7 +51,7 @@ public class Status {
     
     public static void setProcessing(FBJob job) {
         try {
-            File procFile = new File(PROCESSING_DIR, job.toString());
+            File procFile = new File(PROCESSING_DIR, job.fileName());
             procFile.delete();
             procFile.createNewFile();
             procFile.deleteOnExit();
@@ -65,7 +65,7 @@ public class Status {
     }
     
     public static boolean hasReport(FBJob job) {
-        File reportFile = new File(REPORT_DIR, job.toString() + ".xml");
+        File reportFile = new File(REPORT_DIR, job.fileName());
         return (reportFile.exists() && reportFile.isFile());
     }
 }

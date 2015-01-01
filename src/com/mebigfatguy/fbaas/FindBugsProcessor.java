@@ -16,6 +16,7 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -65,6 +66,7 @@ public class FindBugsProcessor implements Runnable {
     					
     					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
     					FindBugs2.main(args);
+    					new File(out.toString()).deleteOnExit();
     
     				} catch (Exception e) {
     					LOGGER.error("Failed running findbugs on job {}", job, e);

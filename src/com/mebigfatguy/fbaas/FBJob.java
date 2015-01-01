@@ -42,6 +42,9 @@ public class FBJob {
 		return version;
 	}
 	
+	public String fileName() {
+	    return groupId + "_" + artifactId + "_" + version + ".xml";
+	}
 	@Override
 	public String toString() {
 	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

@@ -21,9 +21,17 @@ import java.util.Locale;
 public class FindBugsResultsProcessor {
 
     public Results getResults(Locale locale, FBJob job) {
-        String status = Bundle.getString(locale, Bundle.Processing);
-        Results r = new Results(status, null);
+        if (Status.isProcessing(job)) {
+            String status = Bundle.getString(locale, Bundle.Processing, job);
+            return new Results(status, null);
+        }
+        if (!Status.hasReport(job)) {
+            String status = Bundle.getString(locale, Bundle.Starting, job);
+            return new Results(status, null);
+        }
         
-        return r;
+        String status = Bundle.getString(locale, Bundle.Complete, job);
+        //process bugs
+        return new Results(status, null);
     }
 }
