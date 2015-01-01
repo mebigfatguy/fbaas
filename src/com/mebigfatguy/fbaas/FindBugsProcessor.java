@@ -27,7 +27,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -42,9 +42,9 @@ import edu.umd.cs.findbugs.FindBugs2;
 public class FindBugsProcessor implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FindBugsProcessor.class);
-	private final ArrayBlockingQueue<FBJob> queue;
+	private final BlockingQueue<FBJob> queue;
 	
-	public FindBugsProcessor(ArrayBlockingQueue<FBJob> q) {
+	public FindBugsProcessor(BlockingQueue<FBJob> q) {
 		queue = q;
 	}
 	

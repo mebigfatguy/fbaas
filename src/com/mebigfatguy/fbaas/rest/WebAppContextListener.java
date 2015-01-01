@@ -17,6 +17,7 @@
 package com.mebigfatguy.fbaas.rest;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -33,7 +34,6 @@ public class WebAppContextListener implements ServletContextListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppContextListener.class);
 	
-	private ArrayBlockingQueue<FBJob> queue;
 	private Thread processor;
 	
 	@Override
@@ -45,7 +45,7 @@ public class WebAppContextListener implements ServletContextListener {
 			FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
 			event.getServletContext().setAttribute("results", resultsProcessor);
 			
-			queue = new ArrayBlockingQueue<FBJob>(10000);
+			BlockingQueue<FBJob> queue = new ArrayBlockingQueue<FBJob>(10000);
 			event.getServletContext().setAttribute("queue", queue);
 			
 			processor = new Thread(new FindBugsProcessor(queue));
