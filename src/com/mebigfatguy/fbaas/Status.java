@@ -34,6 +34,12 @@ public class Status {
     private static final File REPORT_DIR = new File(FBAAS_DIR, "reports");
     private static final Duration MAX_PROCESSING_TIME = Duration.of(1, ChronoUnit.HOURS);
     
+    static {
+        FBAAS_DIR.mkdirs();
+        PROCESSING_DIR.mkdirs();
+        REPORT_DIR.mkdirs();
+    }
+    
     private Status() {
     }
     
