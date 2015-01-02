@@ -67,11 +67,14 @@ public class FindBugsProcessor implements Runnable {
     					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
     					FindBugs2.main(args);
     					new File(out.toString()).deleteOnExit();
+    					Status.deleteProcessingFile(job);
     
     				} catch (Exception e) {
+    				    Status.deleteReport(job);
     				    Status.setProcessingFailed(job, e);
     					LOGGER.error("Failed running findbugs on job {}", job, e);
     				} catch (Throwable t) {
+                        Status.deleteReport(job);
     					LOGGER.error("Failed running findbugs on job {}", job, t);
     				} finally {
     					if (jarDirectory != null) {

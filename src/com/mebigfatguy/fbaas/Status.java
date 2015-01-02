@@ -102,4 +102,14 @@ public class Status {
         File reportFile = new File(REPORT_DIR, job.fileName());
         return (reportFile.exists() && reportFile.isFile());
     }
+    
+    public static void deleteProcessingFile(FBJob job) {
+        File procFile = new File(PROCESSING_DIR, job.fileName());
+        procFile.delete();
+    }
+    
+    public static void deleteReport(FBJob job) {
+        File reportFile = new File(REPORT_DIR, job.fileName());
+        reportFile.delete();
+    }
 }
