@@ -22,6 +22,11 @@ public class FindBugsResultsProcessor {
 
     public Results getResults(Locale locale, FBJob job) {
         if (Status.isProcessing(job)) {
+            String failure = Status.getProcessingFailed(locale, job);
+            if (failure != null) {
+                return new Results(failure, null);
+            }
+            
             String status = Bundle.getString(locale, Bundle.Processing, job);
             return new Results(status, null);
         }

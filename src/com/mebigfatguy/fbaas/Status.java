@@ -16,8 +16,13 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +68,29 @@ public class Status {
             procFile.deleteOnExit();
         } catch (IOException e) {
             LOGGER.error("Failed to create processing file for {}", job, e);
+        }
+    }
+    
+    public static String getProcessingFailed(Locale locale, FBJob job) {
+        File procFile = new File(PROCESSING_DIR, job.fileName());
+        if (procFile.length() == 0) {
+            return null;
+        }
+        
+        try (BufferedReader r = new BufferedReader(new FileReader(procFile))) {
+            return Bundle.getString(locale, Bundle.Failure, r.readLine());
+        } catch (IOException e) {
+            LOGGER.error("Failed reading failure message in processing file for {}", job, e);
+            return Bundle.getString(locale, Bundle.Failure, job);
+        }   
+    }
+    
+    public static void setProcessingFailed(FBJob job, Exception e) {
+        File procFile = new File(PROCESSING_DIR, job.fileName());
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(procFile))) {
+            bw.write(e.getMessage());
+        } catch (IOException ioe) {
+            LOGGER.error("Failed writing failure message to processing file for {}", job, ioe);
         }
     }
     

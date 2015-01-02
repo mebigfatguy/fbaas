@@ -30,7 +30,8 @@ public enum Bundle {
 	Version,
 	Starting,
 	Processing,
-	Complete;
+	Complete,
+	Failure;
 	
 	public static String getString(Locale locale, Bundle key, Object... parms) {
 		

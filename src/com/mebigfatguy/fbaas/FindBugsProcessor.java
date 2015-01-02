@@ -69,6 +69,7 @@ public class FindBugsProcessor implements Runnable {
     					new File(out.toString()).deleteOnExit();
     
     				} catch (Exception e) {
+    				    Status.setProcessingFailed(job, e);
     					LOGGER.error("Failed running findbugs on job {}", job, e);
     				} catch (Throwable t) {
     					LOGGER.error("Failed running findbugs on job {}", job, t);
