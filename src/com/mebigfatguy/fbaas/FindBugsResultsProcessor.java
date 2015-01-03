@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class FindBugsResultsProcessor {
 
-    public Results getResults(Locale locale, FBJob job) {
+    public Results getResults(Locale locale, Artifact job) {
         if (Status.isProcessing(job)) {
             String failure = Status.getProcessingFailed(locale, job);
             if (failure != null) {

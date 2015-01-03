@@ -48,7 +48,7 @@ public class Status {
     private Status() {
     }
     
-    public static boolean isProcessing(FBJob job) {
+    public static boolean isProcessing(Artifact job) {
         File procFile = new File(PROCESSING_DIR, job.fileName());
         if (!procFile.exists() || !procFile.isFile()) {
             return false;
@@ -60,7 +60,7 @@ public class Status {
         return (d.compareTo(MAX_PROCESSING_TIME) < 0);
     }
     
-    public static void setProcessing(FBJob job) {
+    public static void setProcessing(Artifact job) {
         try {
             File procFile = new File(PROCESSING_DIR, job.fileName());
             procFile.delete();
@@ -71,7 +71,7 @@ public class Status {
         }
     }
     
-    public static String getProcessingFailed(Locale locale, FBJob job) {
+    public static String getProcessingFailed(Locale locale, Artifact job) {
         File procFile = new File(PROCESSING_DIR, job.fileName());
         if (procFile.length() == 0) {
             return null;
@@ -85,7 +85,7 @@ public class Status {
         }   
     }
     
-    public static void setProcessingFailed(FBJob job, Exception e) {
+    public static void setProcessingFailed(Artifact job, Exception e) {
         File procFile = new File(PROCESSING_DIR, job.fileName());
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(procFile))) {
             bw.write(e.getMessage());
@@ -98,17 +98,17 @@ public class Status {
         return REPORT_DIR;
     }
     
-    public static boolean hasReport(FBJob job) {
+    public static boolean hasReport(Artifact job) {
         File reportFile = new File(REPORT_DIR, job.fileName());
         return (reportFile.exists() && reportFile.isFile());
     }
     
-    public static void deleteProcessingFile(FBJob job) {
+    public static void deleteProcessingFile(Artifact job) {
         File procFile = new File(PROCESSING_DIR, job.fileName());
         procFile.delete();
     }
     
-    public static void deleteReport(FBJob job) {
+    public static void deleteReport(Artifact job) {
         File reportFile = new File(REPORT_DIR, job.fileName());
         reportFile.delete();
     }

@@ -19,12 +19,12 @@ package com.mebigfatguy.fbaas;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class FBJob {
+public class Artifact {
 	private String groupId;
 	private String artifactId;
 	private String version;
 	
-	public FBJob(String groupId, String artifactId, String version) {
+	public Artifact(String groupId, String artifactId, String version) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;

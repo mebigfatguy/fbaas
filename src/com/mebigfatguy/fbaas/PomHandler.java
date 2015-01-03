@@ -43,10 +43,10 @@ public class PomHandler {
 	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
 	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
-	private final FBJob job;
+	private final Artifact job;
 	private final Path jarDirectory;
 	
-	public PomHandler(FBJob fbJob, Path jarDir) {
+	public PomHandler(Artifact fbJob, Path jarDir) {
 		job = fbJob;
 		jarDirectory = jarDir;
 	}

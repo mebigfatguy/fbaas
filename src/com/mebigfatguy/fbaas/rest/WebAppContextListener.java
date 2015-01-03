@@ -25,7 +25,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mebigfatguy.fbaas.FBJob;
+import com.mebigfatguy.fbaas.Artifact;
 import com.mebigfatguy.fbaas.FindBugsProcessor;
 import com.mebigfatguy.fbaas.FindBugsResultsProcessor;
 import com.mebigfatguy.fbaas.FindBugsSecurityManager;
@@ -45,7 +45,7 @@ public class WebAppContextListener implements ServletContextListener {
 			FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
 			event.getServletContext().setAttribute("results", resultsProcessor);
 			
-			BlockingQueue<FBJob> queue = new ArrayBlockingQueue<FBJob>(10000);
+			BlockingQueue<Artifact> queue = new ArrayBlockingQueue<Artifact>(10000);
 			event.getServletContext().setAttribute("queue", queue);
 			
 			processor = new Thread(new FindBugsProcessor(queue));

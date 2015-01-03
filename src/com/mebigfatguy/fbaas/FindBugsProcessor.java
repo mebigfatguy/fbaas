@@ -42,9 +42,9 @@ import edu.umd.cs.findbugs.FindBugs2;
 public class FindBugsProcessor implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FindBugsProcessor.class);
-	private final BlockingQueue<FBJob> queue;
+	private final BlockingQueue<Artifact> queue;
 	
-	public FindBugsProcessor(BlockingQueue<FBJob> q) {
+	public FindBugsProcessor(BlockingQueue<Artifact> q) {
 		queue = q;
 	}
 	
@@ -52,7 +52,7 @@ public class FindBugsProcessor implements Runnable {
 	public void run() {
 		try {
 			while (!Thread.interrupted()) {
-				FBJob job = queue.take();
+				Artifact job = queue.take();
 				
 				if (!Status.isProcessing(job) && !Status.hasReport(job)) {
 				    Status.setProcessing(job);
@@ -98,7 +98,7 @@ public class FindBugsProcessor implements Runnable {
 		}
 	}
 
-	private static Path loadJars(FBJob job) throws IOException {
+	private static Path loadJars(Artifact job) throws IOException {
 		
 		Path jarDir = Files.createTempDirectory("fb");
 		
@@ -109,7 +109,7 @@ public class FindBugsProcessor implements Runnable {
 	}
 	
 	
-	private static Path buildProjectFile(FBJob job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
+	private static Path buildProjectFile(Artifact job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
 		final Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
 		final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + ".jar");
 		final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + "-sources.jar");
