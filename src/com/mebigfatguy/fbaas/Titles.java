@@ -47,6 +47,11 @@ public class Titles {
 	private String groupId;
 	private String artifactId;
 	private String version;
+	private String category;
+	private String type;
+	private String message;
+	private String fieldMethod;
+	private String location;
 	
 	public Titles(Locale locale) {
 		title = Bundle.getString(locale, Bundle.Title);
@@ -54,6 +59,11 @@ public class Titles {
 		groupId = Bundle.getString(locale, Bundle.GroupId);
 		artifactId = Bundle.getString(locale, Bundle.ArtifactId);
 		version = Bundle.getString(locale, Bundle.Version);
+		category = Bundle.getString(locale, Bundle.Category);
+		type = Bundle.getString(locale, Bundle.Type);
+		message = Bundle.getString(locale, Bundle.Message);
+		fieldMethod = Bundle.getString(locale, Bundle.FieldMethod);
+		location = Bundle.getString(locale, Bundle.Location);
 	}
 	
 	public String getTitle() {
@@ -76,7 +86,27 @@ public class Titles {
 		return version;
 	}
 	
-	@Override
+	public String getCategory() {
+        return category;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getFieldMethod() {
+        return fieldMethod;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    @Override
 	public String toString() {
 	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}

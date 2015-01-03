@@ -14,9 +14,11 @@
 
 		<div class="span12">
 			<table id="artifact" class="table">
-				<tr><td><input id="groupId" type="text"/></td></tr>
-				<tr><td><input id="artifactId" type="text"/></td></tr>
-				<tr><td><input id="version" type="text"/></td></tr>					
+			    <tbody>
+					<tr><td><input id="groupId" type="text"/></td></tr>
+					<tr><td><input id="artifactId" type="text"/></td></tr>
+					<tr><td><input id="version" type="text"/></td></tr>	
+				</tbody>				
 			</table>
 			<input type="submit" name="FindBugs" value="FindBugs" id="FindBugs" onClick="javascript:findbugs($( '#groupId' ).val(), $( '#artifactId' ).val(), $( '#version' ).val())"/>
 		</div>
@@ -24,12 +26,16 @@
 		<div id="results" class="span12 hidden">
 		      <h3></h3>
 		      <table id="bugs" class="table">
-		          <tr>
-		              <th id="source"/>
-		              <th id="kind"/>
-		              <th id="message"/>
-		              <th id="priority"/>
-		          </tr>
+		          <thead>
+			          <tr>
+			              <th id="category"/>
+			              <th id="type"/>
+			              <th id="message"/>
+			              <th id="fieldmethod"/>
+			              <th id="location"/>
+			          </tr>
+		          </thead>
+		          <tbody/>
 		      </table>
 		</div>
 

@@ -79,8 +79,30 @@ public class FindBugsResultsProcessor {
         
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
-            if ("BugInstance".equals(localName)) {
+            switch (localName) {
+            case "BugInstance":
                 bug = new Bug();
+                bug.setCategory(attributes.getValue("category"));
+                bug.setType(attributes.getValue("type"));
+                break;
+                
+            case "Class":
+                bug.setClassName(attributes.getValue("classname"));
+                break;
+                
+            case "Field":
+            case "Method":
+                bug.setMethodName(attributes.getValue("name"));
+                break;
+                
+            case "SourceLine":
+                try {
+                    bug.setLineStart(Integer.parseInt(attributes.getValue("start")));
+                    bug.setLineEnd(Integer.parseInt(attributes.getValue("end")));
+                } catch (Exception e) {
+                    //ignore
+                }
+                break;
             }
         }
         
