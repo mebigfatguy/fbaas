@@ -62,7 +62,7 @@ public class FindBugsProcessor implements Runnable {
     					jarDirectory = loadJars(job);
     					
     					Path fbpFile = buildProjectFile(job, jarDirectory);
-    					Path out = Paths.get(Status.getReportDir().toString(), job.fileName());
+    					File out = Status.getReportFile(job);
     					
     					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
     					FindBugs2.main(args);

@@ -16,7 +16,21 @@
  */
 package com.mebigfatguy.fbaas;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public class FindBugsResultsProcessor {
 
@@ -36,7 +50,46 @@ public class FindBugsResultsProcessor {
         }
         
         String status = Bundle.getString(locale, Bundle.Complete, job);
-        //process bugs
-        return new Results(status, null);
+        List<Bug> bugs = processBugs(job);
+        return new Results(status, bugs);
+    }
+    
+    private List<Bug> processBugs(Artifact job) {
+        File reportFile = Status.getReportFile(job);
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(reportFile))) {
+            List<Bug> bugs = new ArrayList<>();
+            XMLReader r = XMLReaderFactory.createXMLReader();
+            r.setContentHandler(new BugsHandler(bugs));
+            r.parse(new InputSource(bis));
+            
+            return bugs;
+        } catch (SAXException | IOException e) {
+            return Collections.emptyList();
+        }
+    }
+    
+    private static class BugsHandler extends DefaultHandler {
+        
+        private List<Bug> bugReport;
+        Bug bug;
+        
+        public BugsHandler(List<Bug> bugs) {
+            bugReport = bugs;
+        }
+        
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) {
+            if ("BugInstance".equals(localName)) {
+                bug = new Bug();
+            }
+        }
+        
+        @Override
+        public void endElement(String uri, String localName, String qName) {
+            if ("BugInstance".equals(localName)) {
+                bugReport.add(bug);
+                bug = null;
+            }
+        }
     }
 }

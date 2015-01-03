@@ -94,8 +94,8 @@ public class Status {
         }
     }
     
-    public static File getReportDir() {
-        return REPORT_DIR;
+    public static File getReportFile(Artifact job) {
+        return new File(REPORT_DIR, job.fileName());
     }
     
     public static boolean hasReport(Artifact job) {
