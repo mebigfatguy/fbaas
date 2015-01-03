@@ -13,7 +13,7 @@ $(document).ready(function() {
 
 function findbugs(groupId, artifactId, version) {
 	var href = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
-	href = href + "rest/findbugs/run/" + encodeURIComponent(groupId) + "/" + encodeURIComponent(artifactId) + "/" + encodeURIComponent(version);
+	href = href + "rest/findbugs/run/" + encodeURIComponent(groupId.trim()) + "/" + encodeURIComponent(artifactId.trim()) + "/" + encodeURIComponent(version.trim());
 	$.getJSON(href, function(data) {
 		$( 'h3' ).text(data.status);
 		$( '#results' ).addClass('show').removeClass('hide')
