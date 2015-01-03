@@ -66,7 +66,6 @@ public class FindBugsProcessor implements Runnable {
     					
     					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
     					FindBugs2.main(args);
-    					new File(out.toString()).deleteOnExit();
     					Status.deleteProcessingFile(job);
     
     				} catch (Exception e) {
