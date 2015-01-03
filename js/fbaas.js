@@ -21,6 +21,14 @@ function findbugs(groupId, artifactId, version) {
 	href = href + "rest/findbugs/run/" + encodeURIComponent(groupId.trim()) + "/" + encodeURIComponent(artifactId.trim()) + "/" + encodeURIComponent(version.trim());
 	$.getJSON(href, function(data) {
 		$( 'h3' ).text(data.status);
-		$( '#results' ).addClass('show').removeClass('hide')
+		$( '#results' ).addClass('show').removeClass('hide');
+		
+		$('#bugs tbody').remove();
+		jQuery.each( data.bugs, function( i, val ) {
+			var row = '<tr><td>' + val.category + '</td><td>' + val.type + '</td><td>' + val.className + 
+			          '</td><td>' + (val.methodName+val.fieldName) + '</td><td>' + (val.lineStart + '-' + val.lineEnd) +
+			          '</td><td>';
+			$('#bugs > tbody:last').append(row);
+		});
 	});
 }
