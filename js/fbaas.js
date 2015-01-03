@@ -23,11 +23,15 @@ function findbugs(groupId, artifactId, version) {
 		$( 'h3' ).text(data.status);
 		$( '#results' ).addClass('show').removeClass('hide');
 		
-		$('#bugs tbody').remove();
+		$('#bugs tbody > tr').remove();
 		jQuery.each( data.bugs, function( i, val ) {
-			var row = '<tr><td>' + val.category + '</td><td>' + val.type + '</td><td>' + val.className + 
-			          '</td><td>' + (val.methodName+val.fieldName) + '</td><td>' + (val.lineStart + '-' + val.lineEnd) +
-			          '</td><td>';
+			var row = '<tr>' +
+			          '<td>' + val.category + '</td>' + 
+			          '<td>' + val.type + '</td>' +
+			          '<td>' + val.className + '</td>' +
+			          '<td>' + (typeof(val.methodName) === null ? val.fieldName : val.methodName) + '</td>' +
+			          '<td>' + (val.lineStart + '-' + val.lineEnd) + '</td>' +
+			          '</tr>';
 			$('#bugs > tbody:last').append(row);
 		});
 	});
