@@ -8,11 +8,11 @@ $(document).ready(function() {
 		$( '#groupId' ).val(data.groupId);
 		$( '#artifactId' ).val(data.artifactId);
 		$( '#version' ).val(data.version);
-		$( '#category' ).val(data.category);
-		$( '#type' ).val(data.type);
-		$( '#message' ).val(data.message);
-		$( '#fieldmethod' ).val(data.fieldMethod);
-		$( '#location' ).val(data.location);
+		$( '#category' ).append(data.category);
+		$( '#type' ).append(data.type);
+		$( '#message' ).append(data.message);
+		$( '#fieldmethod' ).append(data.fieldMethod);
+		$( '#location' ).append(data.location);
 	});
 });
 
