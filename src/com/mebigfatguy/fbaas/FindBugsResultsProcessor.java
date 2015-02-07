@@ -54,7 +54,7 @@ public class FindBugsResultsProcessor {
         return new Results(status, bugs);
     }
     
-    private List<Bug> processBugs(Artifact job) {
+    private static List<Bug> processBugs(Artifact job) {
         File reportFile = Status.getReportFile(job);
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(reportFile))) {
             List<Bug> bugs = new ArrayList<>();
