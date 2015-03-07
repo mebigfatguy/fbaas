@@ -53,6 +53,7 @@
 	<path id="fbaas.classpath">
 		<pathelement location="${lib.dir}/findbugs-${findbugs.version}.jar" />
 		<pathelement location="${lib.dir}/bcel-findbugs-${bcel-findbugs.version}.jar" />
+		<pathelement location="${lib.dir}/commons-lang3-${commons-lang3.version}.jar" />
 		<pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar" />
 		<pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar" />
 		<pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar" />

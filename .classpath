@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/findbugs-3.0.0.jar" sourcepath="/home/dave/dev/fbaas/lib/sources/findbugs-3.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/threetenbp-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="output" path="target/war/WEB-INF/classes"/>
 </classpath>
