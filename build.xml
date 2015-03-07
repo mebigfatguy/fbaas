@@ -127,16 +127,6 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
-		<copy todir="${war.dir}/css">
-			<fileset dir="${css.dir}">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
-		<copy todir="${war.dir}/img">
-			<fileset dir="${img.dir}">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
 		<copy todir="${classes.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.properties"/>
