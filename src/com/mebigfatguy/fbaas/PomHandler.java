@@ -122,7 +122,7 @@ public class PomHandler {
 					handler.processPom();
 				}
 			} catch (IOException e) {
-				throw new SAXException("Failed downloading inner pom", e);
+				throw new SAXException("Failed downloading inner pom: " + groupId + '/' + artifactId + '/' + version, e);
 			}
 		}
 
