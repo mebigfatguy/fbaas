@@ -43,7 +43,7 @@ public class Artifact {
 	}
 	
 	public String fileName() {
-	    return groupId + "_" + artifactId + "_" + version + ".xml";
+	    return groupId + '_' + artifactId + '_' + version + ".xml";
 	}
 	@Override
 	public String toString() {

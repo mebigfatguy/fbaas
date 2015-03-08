@@ -72,7 +72,7 @@ public class PomHandler {
 	private void downloadJar(String groupId, String artifactId, String version) throws MalformedURLException {
 		try {
 			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
-			Path jarPath = Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar");
+			Path jarPath = Paths.get(jarDirectory.toString(), artifactId + '-' + version + ".jar");
 			if (!Files.exists(jarPath)) {
 				Downloader dl = new Downloader(jarURL, jarPath);
 				Thread th = new Thread(dl);

@@ -110,8 +110,8 @@ public class FindBugsProcessor implements Runnable {
 	
 	private static Path buildProjectFile(Artifact job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
 		final Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
-		final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + ".jar");
-		final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + "-" + job.getVersion() + "-sources.jar");
+		final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + ".jar");
+		final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + "-sources.jar");
 		
 		final List<Path> auxList = new ArrayList<Path>();
 		
