@@ -19,9 +19,12 @@ package com.mebigfatguy.fbaas;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -77,7 +80,7 @@ public class Status {
             return null;
         }
         
-        try (BufferedReader r = new BufferedReader(new FileReader(procFile))) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(procFile), StandardCharsets.UTF_8))) {
             return Bundle.getString(locale, Bundle.Failure, r.readLine());
         } catch (IOException e) {
             LOGGER.error("Failed reading failure message in processing file for {}", job, e);
@@ -87,7 +90,7 @@ public class Status {
     
     public static void setProcessingFailed(Artifact job, Exception e) {
         File procFile = new File(PROCESSING_DIR, job.fileName());
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(procFile))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(procFile), StandardCharsets.UTF_8))) {
             bw.write(e.getMessage());
         } catch (IOException ioe) {
             LOGGER.error("Failed writing failure message to processing file for {}", job, ioe);
