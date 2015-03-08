@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -43,17 +44,17 @@ public class PomHandler {
 	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
 	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
-	private final Artifact job;
+	private final Artifact jarArtifact;
 	private final Path jarDirectory;
 	
-	public PomHandler(Artifact fbJob, Path jarDir) {
-		job = fbJob;
+	public PomHandler(Artifact artifact, Path jarDir) {
+		jarArtifact = artifact;
 		jarDirectory = jarDir;
 	}
 	
 	public void processPom() throws IOException {
-		parsePom(job.getGroupId(), job.getArtifactId(), job.getVersion());
-		downloadJar(job.getGroupId(), job.getArtifactId(), job.getVersion());
+		parsePom(jarArtifact.getGroupId(), jarArtifact.getArtifactId(), jarArtifact.getVersion());
+		downloadJar(jarArtifact.getGroupId(), jarArtifact.getArtifactId(), jarArtifact.getVersion());
 	}
 	
 	private void parsePom(String groupId, String artifactId, String version) throws IOException {
@@ -71,11 +72,14 @@ public class PomHandler {
 	private void downloadJar(String groupId, String artifactId, String version) throws MalformedURLException {
 		try {
 			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
-			Downloader dl = new Downloader(jarURL, Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar"));
-			Thread th = new Thread(dl);
-			th.start();
-	
-			th.join();
+			Path jarPath = Paths.get(jarDirectory.toString(), artifactId + "-" + version + ".jar");
+			if (!Files.exists(jarPath)) {
+				Downloader dl = new Downloader(jarURL, jarPath);
+				Thread th = new Thread(dl);
+				th.start();
+		
+				th.join();
+			}
 		} catch (InterruptedException e) {
 		}
 	}
@@ -112,6 +116,10 @@ public class PomHandler {
 					version = text.toString();
 				} else if (innerTag.equalsIgnoreCase("dependency")) {
 					downloadJar(groupId, artifactId, version);
+				} else if (innerTag.equalsIgnoreCase("parent")) {
+					Artifact parentArtifact = new Artifact(groupId, artifactId, version);
+					PomHandler handler = new PomHandler(parentArtifact, jarDirectory);
+					handler.processPom();
 				}
 			} catch (IOException e) {
 				throw new SAXException("Failed downloading inner pom", e);
