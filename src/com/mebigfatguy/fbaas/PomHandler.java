@@ -81,6 +81,7 @@ public class PomHandler {
 				th.join();
 			}
 		} catch (InterruptedException e) {
+			LOGGER.info("Download of jar {} {} {} was interrupted", groupId, artifactId, version);
 		}
 	}
 	

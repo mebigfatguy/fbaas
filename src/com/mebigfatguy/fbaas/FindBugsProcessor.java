@@ -51,6 +51,7 @@ public class FindBugsProcessor implements Runnable {
 	@Override
 	public void run() {
 		try {
+			LOGGER.info("FindBugsProcessor started.");
 			while (!Thread.interrupted()) {
 				Artifact job = queue.take();
 				
@@ -94,6 +95,7 @@ public class FindBugsProcessor implements Runnable {
 				}
 			}
 		} catch (InterruptedException | IOException e) {
+			LOGGER.info("FindBugsProcessor stopped.");
 		}
 	}
 
