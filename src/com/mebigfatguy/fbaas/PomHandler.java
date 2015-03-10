@@ -24,7 +24,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +45,24 @@ public class PomHandler {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(PomHandler.class);
 	
+	private static final Pattern PROPERTY_PATTERN = Pattern.compile("\\$\\{([^\\}]*)\\}");
+	
 	private static final String MAVEN_CENTRAL_POM_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.pom";
 	private static final String MAVEN_CENTRAL_JAR_URL = "http://repo1.maven.org/maven2/%s/%s/%s/%s-%s.jar";
 	
 	private final Artifact jarArtifact;
 	private final Path jarDirectory;
+	private final Map<String, String> properties;
 	
 	public PomHandler(Artifact artifact, Path jarDir) {
 		jarArtifact = artifact;
 		jarDirectory = jarDir;
+		properties = new HashMap<>();
 	}
 	
 	public void processPom() throws IOException {
 		parsePom(jarArtifact.getGroupId(), jarArtifact.getArtifactId(), jarArtifact.getVersion());
-		downloadJar(jarArtifact.getGroupId(), jarArtifact.getArtifactId(), jarArtifact.getVersion());
+		downloadJar(jarArtifact);
 	}
 	
 	private void parsePom(String groupId, String artifactId, String version) throws IOException {
@@ -69,10 +77,10 @@ public class PomHandler {
 		}
 	}
 	
-	private void downloadJar(String groupId, String artifactId, String version) throws MalformedURLException {
+	private void downloadJar(Artifact artifact) throws MalformedURLException {
 		try {
-			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, groupId.replaceAll("\\.",  "/"), artifactId, version, artifactId, version));
-			Path jarPath = Paths.get(jarDirectory.toString(), artifactId + '-' + version + ".jar");
+			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, artifact.getGroupId().replaceAll("\\.",  "/"), artifact.getArtifactId(), artifact.getVersion(), artifact.getArtifactId(), artifact.getVersion()));
+			Path jarPath = Paths.get(jarDirectory.toString(), artifact.getArtifactId() + '-' + artifact.getVersion() + ".jar");
 			if (!Files.exists(jarPath)) {
 				Downloader dl = new Downloader(jarURL, jarPath);
 				Thread th = new Thread(dl);
@@ -81,7 +89,7 @@ public class PomHandler {
 				th.join();
 			}
 		} catch (InterruptedException e) {
-			LOGGER.info("Download of jar {} {} {} was interrupted", groupId, artifactId, version);
+			LOGGER.info("Download of jar {} {} {} was interrupted", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
 		}
 	}
 	
@@ -99,7 +107,7 @@ public class PomHandler {
 		}
 		
 		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		public void startElement(String urim, String localName, String qName, Attributes attributes) throws SAXException {
 			openTags.add(localName);
 			text.setLength(0);
 		}
@@ -108,6 +116,7 @@ public class PomHandler {
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 			try {
 				String innerTag = openTags.remove(openTags.size() - 1);
+				String outerTag = (openTags.size() < 1) ? "" : openTags.get(openTags.size() - 1);
 				
 				if (innerTag.equalsIgnoreCase("groupid")) {
 					groupId = text.toString();
@@ -116,11 +125,15 @@ public class PomHandler {
 				} else if (innerTag.equalsIgnoreCase("version")) {
 					version = text.toString();
 				} else if (innerTag.equalsIgnoreCase("dependency")) {
-					downloadJar(groupId, artifactId, version);
+					Artifact artifact = new Artifact(groupId, artifactId, version);
+					downloadJar(substituteProperties(artifact));
 				} else if (innerTag.equalsIgnoreCase("parent")) {
 					Artifact parentArtifact = new Artifact(groupId, artifactId, version);
 					PomHandler handler = new PomHandler(parentArtifact, jarDirectory);
 					handler.processPom();
+					properties.putAll(handler.properties);
+				} else if (outerTag.equalsIgnoreCase("properties")) {
+					properties.put(localName, text.toString());
 				}
 			} catch (IOException e) {
 				throw new SAXException("Failed downloading inner pom: " + groupId + '/' + artifactId + '/' + version, e);
@@ -132,4 +145,41 @@ public class PomHandler {
 			text.append(new String(ch, start, length));
 		}
 	}
+	
+	private Artifact substituteProperties(Artifact artifact) {
+		return new Artifact(substituteProperties(artifact.getGroupId()), substituteProperties(artifact.getArtifactId()), substituteProperties(artifact.getVersion()));
+	}
+	
+	private String substituteProperties(String value) {
+		
+		StringBuilder convertedValue = new StringBuilder();
+		
+		int start = 0;
+		
+		Matcher m = PROPERTY_PATTERN.matcher(value);
+		if (!m.find()) {
+			return value;
+		}
+
+		while (m.find(start)) {
+			convertedValue.append(value.substring(start, m.start()));
+			
+			String name = m.group(1);
+			String propVal = properties.get(name);
+			if (propVal != null) {
+				convertedValue.append(propVal);
+			} else {
+				convertedValue.append(m.group(0));
+			}
+			start = m.end();
+		}
+		
+		if (start < value.length()) {
+			convertedValue.append(value.substring(start, value.length()));
+		}
+		
+		return convertedValue.toString();
+	}
+	
+	
 }
