@@ -16,6 +16,7 @@
  */
 package com.mebigfatguy.fbaas.downloader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Deque;
 
@@ -29,13 +30,13 @@ public class BufferReader implements Runnable {
 	private final InputStream inputStream;
 	private final Deque<TransferBuffer> deque;
 	private final int bufferSize;
-	private boolean success;
+	private IOException exception;
 	
 	public BufferReader(final InputStream is, Deque<TransferBuffer> dq, int bufSize) {
 		inputStream = is;
 		deque = dq;
 		bufferSize = bufSize;
-		success = false;
+		exception = null;
 	}
 
 	@Override
@@ -54,9 +55,9 @@ public class BufferReader implements Runnable {
                     size = inputStream.read(buffer);
                 }
             }
-            success = true;
-        } catch (Exception e) {
+        } catch (IOException e) {
         	LOGGER.error("Failed populating queue from inputstream");
+        	exception = e;
         } finally {
             TransferBuffer queueBuffer = new TransferBuffer(null, -1);
             synchronized (deque) {
@@ -65,4 +66,10 @@ public class BufferReader implements Runnable {
             }
         }	
     }
+	
+	public void checkSuccess() throws IOException {
+		if (exception != null) {
+			throw exception;
+		}
+	}
 }

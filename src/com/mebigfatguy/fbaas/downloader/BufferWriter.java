@@ -16,6 +16,7 @@
  */
 package com.mebigfatguy.fbaas.downloader;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Deque;
 
@@ -29,12 +30,12 @@ public class BufferWriter implements Runnable {
 	
 	private final OutputStream outputStream;
 	private final Deque<TransferBuffer> deque;
-	private boolean success;
+	private IOException exception;
 
 	public BufferWriter(final OutputStream os, Deque<TransferBuffer> dq) {
 		deque = dq;
 		outputStream = os;
-		success = false;
+		exception = null;
 	}
 
 	@Override
@@ -56,9 +57,18 @@ public class BufferWriter implements Runnable {
                     outputStream.write(buffer.getBuffer(), 0, size);
                 }
             }
-            success = true;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+        	LOGGER.error("Failed writing stream into queue - interrupted");
+        	exception = new IOException("Failed writing stream into queue - interrupted", e);
+        } catch (IOException e) {
         	LOGGER.error("Failed writing stream into queue");
+        	exception = e;
         }
+	}
+	
+	public void checkSuccess() throws IOException {
+		if (exception != null) {
+			throw exception;
+		}
 	}
 }

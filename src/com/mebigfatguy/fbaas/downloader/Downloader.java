@@ -35,11 +35,13 @@ public class Downloader implements Runnable{
 
 	private URL srcURL;
 	private Path dstPath;
+	private IOException exception;
 	
 	public Downloader(URL src, Path dst) {
 		
 		srcURL = src;
 		dstPath = dst;
+		exception = null;
 	}
 	
 	@Override
@@ -48,17 +50,31 @@ public class Downloader implements Runnable{
 			 BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(dstPath))) {
 			
 			Deque<TransferBuffer> dq = new ArrayDeque<TransferBuffer>();
-			Thread r = new Thread(new BufferReader(bis, dq, DEFAULT_BUFFER_SIZE));
+			BufferReader br = new BufferReader(bis, dq, DEFAULT_BUFFER_SIZE);
+			Thread r = new Thread(br);
 			r.start();
 			
-			Thread w = new Thread(new BufferWriter(bos, dq));
+			BufferWriter bw = new BufferWriter(bos, dq);
+			Thread w = new Thread(bw);
 			w.start();
 			
 			r.join();
 			w.join();
 			
-		} catch (IOException | InterruptedException e) {
+			br.checkSuccess();
+			bw.checkSuccess();
+		} catch (InterruptedException e) {
+			LOGGER.error("Failed downloading {} to {} - interrupted", srcURL, dstPath, e);
+			exception = new IOException("Failed downloading " + srcURL + " to " + dstPath + " - interrupted");
+		} catch (IOException e) {
 			LOGGER.error("Failed downloading {} to {}", srcURL, dstPath, e);
+			exception = e;
+		}
+	}
+	
+	public void checkSuccess() throws IOException {
+		if (exception != null) {
+			throw exception;
 		}
 	}
 }
