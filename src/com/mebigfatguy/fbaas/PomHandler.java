@@ -77,7 +77,7 @@ public class PomHandler {
 		}
 	}
 	
-	private void downloadJar(Artifact artifact) throws MalformedURLException {
+	private void downloadJar(Artifact artifact) throws MalformedURLException, IOException {
 		try {
 			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, artifact.getGroupId().replaceAll("\\.",  "/"), artifact.getArtifactId(), artifact.getVersion(), artifact.getArtifactId(), artifact.getVersion()));
 			Path jarPath = Paths.get(jarDirectory.toString(), artifact.getArtifactId() + '-' + artifact.getVersion() + ".jar");
@@ -87,6 +87,7 @@ public class PomHandler {
 				th.start();
 		
 				th.join();
+				dl.checkSuccess();
 			}
 		} catch (InterruptedException e) {
 			LOGGER.info("Download of jar {} {} {} was interrupted", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion());
