@@ -61,6 +61,7 @@ public class WebAppContextListener implements ServletContextListener {
 			processor.interrupt();
 			processor.join();
 		} catch (InterruptedException e) {
+			LOGGER.error("Failed to destroy fbaas service", e);
 		}
 	}
 }
