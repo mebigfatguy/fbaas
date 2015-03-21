@@ -20,8 +20,11 @@ import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.Permission;
 
+/**
+ * FindBugs foolishly calls System.exit when done. We can not allow this, so
+ * this security manager prevents this.
+ */
 public class FindBugsSecurityManager extends SecurityManager {
-	@Override
 	public void checkPermission(Permission perm) {
 	}
 
