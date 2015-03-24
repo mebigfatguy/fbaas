@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,6 +102,10 @@ public class PomHandler {
 		private String groupId;
 		private String artifactId;
 		private String version;
+		private String exclusionGroupId;
+		private String exclusionArtifactId;
+		private String exclusionVersion;
+		private Set<Artifact> exclusions = new HashSet<>();
 		
 		public SAXHandler() {
 			openTags = new ArrayList<>();
@@ -120,14 +125,30 @@ public class PomHandler {
 				String outerTag = (openTags.size() < 1) ? "" : openTags.get(openTags.size() - 1);
 				
 				if (innerTag.equalsIgnoreCase("groupid")) {
-					groupId = text.toString();
+					if (outerTag.equalsIgnoreCase("dependency")) {
+						groupId = text.toString();
+					} else {
+						exclusionGroupId = text.toString();
+					}
 				} else if (innerTag.equalsIgnoreCase("artifactid")) {
-					artifactId = text.toString();
+					if (outerTag.equalsIgnoreCase("dependency")) {
+						artifactId = text.toString();
+					} else {
+						exclusionArtifactId = text.toString();
+					}
 				} else if (innerTag.equalsIgnoreCase("version")) {
-					version = text.toString();
+					if (outerTag.equalsIgnoreCase("dependency")) {
+						version = text.toString();
+					} else {
+						exclusionVersion = text.toString();
+					}
+				} else if (innerTag.equalsIgnoreCase("exclusion")) {
+					Artifact artifact = new Artifact(exclusionGroupId, exclusionArtifactId, exclusionVersion);
+					exclusions.add(artifact);
 				} else if (innerTag.equalsIgnoreCase("dependency")) {
 					Artifact artifact = new Artifact(groupId, artifactId, version);
 					downloadJar(substituteProperties(artifact));
+					exclusions.clear();
 				} else if (innerTag.equalsIgnoreCase("parent")) {
 					Artifact parentArtifact = new Artifact(groupId, artifactId, version);
 					PomHandler handler = new PomHandler(parentArtifact, jarDirectory);
