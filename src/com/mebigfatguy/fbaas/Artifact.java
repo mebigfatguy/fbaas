@@ -19,6 +19,9 @@ package com.mebigfatguy.fbaas;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+/**
+ * a maven artifact
+ */
 public class Artifact {
 	private String groupId;
 	private String artifactId;

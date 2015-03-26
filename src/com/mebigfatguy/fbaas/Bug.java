@@ -19,6 +19,9 @@ package com.mebigfatguy.fbaas;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement()
+/**
+ * a findbugs bug to be sent back to the client
+ */
 public class Bug {
     private String category;
     private String type;
