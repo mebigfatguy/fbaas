@@ -18,7 +18,6 @@ package com.mebigfatguy.fbaas;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,7 +76,7 @@ public class PomHandler {
 		}
 	}
 	
-	private void downloadJar(Artifact artifact) throws MalformedURLException, IOException {
+	private void downloadJar(Artifact artifact) throws IOException {
 		try {
 			URL jarURL = new URL(String.format(MAVEN_CENTRAL_JAR_URL, artifact.getGroupId().replaceAll("\\.",  "/"), artifact.getArtifactId(), artifact.getVersion(), artifact.getArtifactId(), artifact.getVersion()));
 			Path jarPath = Paths.get(jarDirectory.toString(), artifact.getArtifactId() + '-' + artifact.getVersion() + ".jar");
