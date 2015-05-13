@@ -25,6 +25,8 @@ import java.security.Permission;
  * this security manager prevents this.
  */
 public class FindBugsSecurityManager extends SecurityManager {
+
+	@Override
 	public void checkPermission(Permission perm) {
 	}
 
