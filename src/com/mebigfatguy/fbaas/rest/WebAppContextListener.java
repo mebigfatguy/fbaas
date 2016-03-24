@@ -16,9 +16,11 @@
  */
 package com.mebigfatguy.fbaas.rest;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -39,14 +41,17 @@ public class WebAppContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
+		    ServletContext context = event.getServletContext();
+		    installPlugins(context);
+		    
 			System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			System.setSecurityManager(new FindBugsSecurityManager());
 			
 			FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
-			event.getServletContext().setAttribute("results", resultsProcessor);
+			context.setAttribute("results", resultsProcessor);
 			
 			BlockingQueue<Artifact> queue = new ArrayBlockingQueue<Artifact>(10000);
-			event.getServletContext().setAttribute("queue", queue);
+			context.setAttribute("queue", queue);
 			
 			processor = new Thread(new FindBugsProcessor(queue));
 			processor.start();
@@ -63,5 +68,16 @@ public class WebAppContextListener implements ServletContextListener {
 		} catch (InterruptedException e) {
 			LOGGER.error("Failed to destroy fbaas service", e);
 		}
+	}
+	
+	private File installPlugins(ServletContext context) {
+	    File path = new File(context.getRealPath("/findbugshome"));
+	    
+	    path.mkdirs();
+	    File pluginDir = new File(path, "plugin");
+	    pluginDir.mkdirs();
+	    
+	    context.setAttribute("findbugs.home",  path);
+	    return path;
 	}
 }
