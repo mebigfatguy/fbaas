@@ -17,6 +17,10 @@
 package com.mebigfatguy.fbaas.rest;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -70,14 +74,15 @@ public class WebAppContextListener implements ServletContextListener {
 		}
 	}
 	
-	private File installPlugins(ServletContext context) {
-	    File path = new File(context.getRealPath("/findbugshome"));
+	private Path installPlugins(ServletContext context) throws IOException {
 	    
-	    path.mkdirs();
-	    File pluginDir = new File(path, "plugin");
-	    pluginDir.mkdirs();
+	    Path findbugsHome = Files.createTempDirectory("findbugs.home");
+	    Files.createDirectories(findbugsHome);
 	    
-	    context.setAttribute("findbugs.home",  path);
-	    return path;
+	    Path pluginDir = findbugsHome.resolve("plugin");
+        Files.createDirectories(pluginDir);
+	    
+	    System.setProperty("findbugs.home",  findbugsHome.toUri().getPath());
+	    return findbugsHome;
 	}
 }
