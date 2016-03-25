@@ -16,11 +16,14 @@
  */
 package com.mebigfatguy.fbaas.rest;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,12 +45,13 @@ public class WebAppContextListener implements ServletContextListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppContextListener.class);
 	
 	private Thread processor;
+	private boolean fbContribInstalled = false;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
 		    ServletContext context = event.getServletContext();
-		    installPlugins(context);
+		    installPlugin();
 		    
 			System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			System.setSecurityManager(new FindBugsSecurityManager());
@@ -74,15 +79,22 @@ public class WebAppContextListener implements ServletContextListener {
 		}
 	}
 	
-	private Path installPlugins(ServletContext context) throws IOException {
-	    
-	    Path findbugsHome = Files.createTempDirectory("findbugs.home");
-	    Files.createDirectories(findbugsHome);
-	    
-	    Path pluginDir = findbugsHome.resolve("plugin");
-        Files.createDirectories(pluginDir);
-	    
-	    System.setProperty("findbugs.home",  findbugsHome.toUri().getPath());
-	    return findbugsHome;
+	private void installPlugin() throws IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(WebAppContextListener.class.getResourceAsStream("/fb.version")))) {
+            String fbJarName = br.readLine();
+            
+            Path userHome = Files.createTempDirectory("user.home");
+            
+            Path pluginDir = userHome.resolve(".findbugs");
+            Files.createDirectories(pluginDir);
+            
+            try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
+                
+                Path jarPath = pluginDir.resolve(fbJarName);
+                try (OutputStream os = new FileOutputStream(jarPath.toString())) {
+                    IOUtils.copy(is, os);
+                }
+            }
+        }
 	}
 }

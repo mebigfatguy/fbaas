@@ -71,6 +71,7 @@
 		<pathelement location="${lib.dir}/jersey-json-${jersey-json.version}.jar" />
 		<pathelement location="${lib.dir}/threetenbp-${threetenbp.version}.jar" />
 		<pathelement location="${lib.dir}/xalan-${xalan.version}.jar" />
+		<pathelement location="${lib.dir}/commons-io-${commons-io.version}.jar" />
 	</path>
 
 	<target name="info">
@@ -112,6 +113,7 @@
 				<include name="**/*.jar"/>
 				<exclude name="sources/*.jar"/>
 				<exclude name="**/javax.servlet-api-${javax.servlet-api.version}.jar"/>
+				<exclude name="**/fb-contrib-${fb-contrib.version}.jar"/>
 			</fileset>
 		</copy>
 		<copy todir="${war.dir}">
@@ -133,7 +135,11 @@
 				<include name="**/*.properties"/>
 				<include name="**/*.xsl"/>
 			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="fb-contrib-${fb-contrib.version}.jar"/>
+			</fileset>
 		</copy>
+		<echo message="fb-contrib-${fb-contrib.version}.jar" file="${classes.dir}/fb.version"/>
 	</target>
 
 	<target name="compile" depends="-init" description="compiles java files">
