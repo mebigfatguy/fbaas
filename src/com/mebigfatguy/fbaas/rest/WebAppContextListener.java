@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -45,7 +46,6 @@ public class WebAppContextListener implements ServletContextListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppContextListener.class);
 	
 	private Thread processor;
-	private boolean fbContribInstalled = false;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
@@ -83,17 +83,22 @@ public class WebAppContextListener implements ServletContextListener {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(WebAppContextListener.class.getResourceAsStream("/fb.version")))) {
             String fbJarName = br.readLine();
             
-            Path userHome = Files.createTempDirectory("user.home");
+            Path userHome = Paths.get(System.getProperty("user.home"));
             
-            Path pluginDir = userHome.resolve(".findbugs");
+            Path findbugsDir = userHome.resolve(".findbugs");
+            Files.createDirectories(findbugsDir);
+            Path pluginDir = findbugsDir.resolve("plugin");
             Files.createDirectories(pluginDir);
             
-            try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
-                
-                Path jarPath = pluginDir.resolve(fbJarName);
-                try (OutputStream os = new FileOutputStream(jarPath.toString())) {
-                    IOUtils.copy(is, os);
+            Path jarPath = pluginDir.resolve(fbJarName);
+            if (!Files.isReadable(jarPath)) {
+                try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
+                    
+                    try (OutputStream os = new FileOutputStream(jarPath.toString())) {
+                        IOUtils.copy(is, os);
+                    }
                 }
+                jarPath.toFile().deleteOnExit();
             }
         }
 	}
