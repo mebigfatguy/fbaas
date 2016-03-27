@@ -23,23 +23,22 @@ import java.util.Deque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class BufferWriter implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BufferWriter.class);
-	
-	private final OutputStream outputStream;
-	private final Deque<TransferBuffer> deque;
-	private IOException exception;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BufferWriter.class);
 
-	public BufferWriter(final OutputStream os, Deque<TransferBuffer> dq) {
-		deque = dq;
-		outputStream = os;
-		exception = null;
-	}
+    private final OutputStream outputStream;
+    private final Deque<TransferBuffer> deque;
+    private IOException exception;
 
-	@Override
-	public void run() {
+    public BufferWriter(final OutputStream os, Deque<TransferBuffer> dq) {
+        deque = dq;
+        outputStream = os;
+        exception = null;
+    }
+
+    @Override
+    public void run() {
         try {
             TransferBuffer buffer = null;
             int size = 0;
@@ -47,7 +46,7 @@ public class BufferWriter implements Runnable {
             while (size >= 0) {
                 synchronized (deque) {
                     while (deque.size() == 0) {
-                    	deque.wait();
+                        deque.wait();
                     }
                     buffer = deque.removeFirst();
                 }
@@ -58,17 +57,17 @@ public class BufferWriter implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
-        	LOGGER.error("Failed writing stream into queue - interrupted");
-        	exception = new IOException("Failed writing stream into queue - interrupted", e);
+            LOGGER.error("Failed writing stream into queue - interrupted");
+            exception = new IOException("Failed writing stream into queue - interrupted", e);
         } catch (IOException e) {
-        	LOGGER.error("Failed writing stream into queue");
-        	exception = e;
+            LOGGER.error("Failed writing stream into queue");
+            exception = e;
         }
-	}
-	
-	public void checkSuccess() throws IOException {
-		if (exception != null) {
-			throw exception;
-		}
-	}
+    }
+
+    public void checkSuccess() throws IOException {
+        if (exception != null) {
+            throw exception;
+        }
+    }
 }

@@ -23,29 +23,16 @@ import java.util.ResourceBundle;
 
 public enum Bundle {
 
-	Title,
-	Description,
-	GroupId,
-	ArtifactId,
-	Version,
-	Category,
-	Type,
-	Message,
-	FieldMethod,
-	Location,
-	Starting,
-	Processing,
-	Complete,
-	Failure;
-	
-	public static String getString(Locale locale, Bundle key, Object... parms) {
-		
-		ResourceBundle bundle = ResourceBundle.getBundle("com/mebigfatguy/fbaas/bundle", locale);
-		String fmt = bundle.getString(key.name());
-		if ((parms == null) || (parms.length == 0)) {
-		    return fmt;
-		}
-		
-		return MessageFormat.format(fmt, parms);
-	}
+    Title, Description, GroupId, ArtifactId, Version, Category, Type, Message, FieldMethod, Location, Starting, Processing, Complete, Failure;
+
+    public static String getString(Locale locale, Bundle key, Object... parms) {
+
+        ResourceBundle bundle = ResourceBundle.getBundle("com/mebigfatguy/fbaas/bundle", locale);
+        String fmt = bundle.getString(key.name());
+        if ((parms == null) || (parms.length == 0)) {
+            return fmt;
+        }
+
+        return MessageFormat.format(fmt, parms);
+    }
 }

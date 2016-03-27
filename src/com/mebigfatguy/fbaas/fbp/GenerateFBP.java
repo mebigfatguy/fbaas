@@ -37,41 +37,40 @@ import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Document;
 
 public class GenerateFBP {
-	private static final String FBP_XSL_PATH = "/com/mebigfatguy/fbaas/fbp/fbp.xsl";
-	
-	private static final String FBP_NAME = "fbp_name";
-	private static final String FBP_JAR = "fbp_jar";
-	private static final String FBP_SRC = "fbp_src";
-	private static final String FBP_AUX = "fbp_aux";
-	
-	private final Path jar;
-	private final Path src;
-	private final List<Path> auxList;
-	
-	public GenerateFBP(Path jarPath, Path srcPath, List<Path> auxJars) {
-		jar = jarPath;
-		src = srcPath;
-		auxList = auxJars;
-	}
-	
-	public void generate(Path fbpOutputPath)  throws ParserConfigurationException, TransformerException, IOException {
+    private static final String FBP_XSL_PATH = "/com/mebigfatguy/fbaas/fbp/fbp.xsl";
 
-		
-		try (InputStream is = GenerateFBP.class.getResourceAsStream(FBP_XSL_PATH);
-			 BufferedWriter bw = Files.newBufferedWriter(fbpOutputPath, Charset.forName("UTF-8"))) {
-			
-			TransformerFactory tf = TransformerFactory.newInstance();
-			Transformer t = tf.newTransformer(new StreamSource(is));
+    private static final String FBP_NAME = "fbp_name";
+    private static final String FBP_JAR = "fbp_jar";
+    private static final String FBP_SRC = "fbp_src";
+    private static final String FBP_AUX = "fbp_aux";
 
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document d = db.newDocument();
-			
-			t.setParameter(FBP_NAME, jar.getFileName().toString());
-			t.setParameter(FBP_JAR,  jar.toString());
-			t.setParameter(FBP_SRC, src.toString());
-			t.setParameter(FBP_AUX, auxList);
-			t.transform(new DOMSource(d), new StreamResult(bw));
-		}
-	}
+    private final Path jar;
+    private final Path src;
+    private final List<Path> auxList;
+
+    public GenerateFBP(Path jarPath, Path srcPath, List<Path> auxJars) {
+        jar = jarPath;
+        src = srcPath;
+        auxList = auxJars;
+    }
+
+    public void generate(Path fbpOutputPath) throws ParserConfigurationException, TransformerException, IOException {
+
+        try (InputStream is = GenerateFBP.class.getResourceAsStream(FBP_XSL_PATH);
+                BufferedWriter bw = Files.newBufferedWriter(fbpOutputPath, Charset.forName("UTF-8"))) {
+
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer t = tf.newTransformer(new StreamSource(is));
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document d = db.newDocument();
+
+            t.setParameter(FBP_NAME, jar.getFileName().toString());
+            t.setParameter(FBP_JAR, jar.toString());
+            t.setParameter(FBP_SRC, src.toString());
+            t.setParameter(FBP_AUX, auxList);
+            t.transform(new DOMSource(d), new StreamResult(bw));
+        }
+    }
 }

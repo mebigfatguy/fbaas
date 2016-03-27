@@ -43,57 +43,57 @@ import com.mebigfatguy.fbaas.FindBugsSecurityManager;
 
 public class WebAppContextListener implements ServletContextListener {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebAppContextListener.class);
-	
-	private Thread processor;
-	
-	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		try {
-		    ServletContext context = event.getServletContext();
-		    installPlugin();
-		    
-			System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
-			System.setSecurityManager(new FindBugsSecurityManager());
-			
-			FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
-			context.setAttribute("results", resultsProcessor);
-			
-			BlockingQueue<Artifact> queue = new ArrayBlockingQueue<Artifact>(10000);
-			context.setAttribute("queue", queue);
-			
-			processor = new Thread(new FindBugsProcessor(queue));
-			processor.start();
-		} catch (Exception e) {
-			LOGGER.error("Failed to initialize fbaas service", e);
-		}
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebAppContextListener.class);
 
-	@Override
-	public void contextDestroyed(ServletContextEvent event) {
-		try {
-			processor.interrupt();
-			processor.join();
-		} catch (InterruptedException e) {
-			LOGGER.error("Failed to destroy fbaas service", e);
-		}
-	}
-	
-	private void installPlugin() throws IOException {
+    private Thread processor;
+
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+        try {
+            ServletContext context = event.getServletContext();
+            installPlugin();
+
+            System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
+            System.setSecurityManager(new FindBugsSecurityManager());
+
+            FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
+            context.setAttribute("results", resultsProcessor);
+
+            BlockingQueue<Artifact> queue = new ArrayBlockingQueue<Artifact>(10000);
+            context.setAttribute("queue", queue);
+
+            processor = new Thread(new FindBugsProcessor(queue));
+            processor.start();
+        } catch (Exception e) {
+            LOGGER.error("Failed to initialize fbaas service", e);
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        try {
+            processor.interrupt();
+            processor.join();
+        } catch (InterruptedException e) {
+            LOGGER.error("Failed to destroy fbaas service", e);
+        }
+    }
+
+    private void installPlugin() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(WebAppContextListener.class.getResourceAsStream("/fb.version")))) {
             String fbJarName = br.readLine();
-            
+
             Path userHome = Paths.get(System.getProperty("user.home"));
-            
+
             Path findbugsDir = userHome.resolve(".findbugs");
             Files.createDirectories(findbugsDir);
             Path pluginDir = findbugsDir.resolve("plugin");
             Files.createDirectories(pluginDir);
-            
+
             Path jarPath = pluginDir.resolve(fbJarName);
             if (!Files.isReadable(jarPath)) {
                 try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
-                    
+
                     try (OutputStream os = new FileOutputStream(jarPath.toString())) {
                         IOUtils.copy(is, os);
                     }
@@ -101,5 +101,5 @@ public class WebAppContextListener implements ServletContextListener {
                 jarPath.toFile().deleteOnExit();
             }
         }
-	}
+    }
 }

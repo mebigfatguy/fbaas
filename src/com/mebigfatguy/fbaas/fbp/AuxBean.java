@@ -26,21 +26,21 @@ import org.w3c.dom.NodeList;
 
 public class AuxBean {
 
-	public NodeList getAuxPaths(final ExpressionContext ec, final List<Path> auxPaths) {
-		return new NodeList() {
+    public NodeList getAuxPaths(final ExpressionContext ec, final List<Path> auxPaths) {
+        return new NodeList() {
 
-			@Override
-			public Node item(int index) {
-				Node contextNode = ec.getContextNode();
-				Document doc = (contextNode instanceof Document) ? (Document) contextNode : contextNode.getOwnerDocument();
-				return doc.createTextNode(auxPaths.get(index).toString());
-			}
+            @Override
+            public Node item(int index) {
+                Node contextNode = ec.getContextNode();
+                Document doc = (contextNode instanceof Document) ? (Document) contextNode : contextNode.getOwnerDocument();
+                return doc.createTextNode(auxPaths.get(index).toString());
+            }
 
-			@Override
-			public int getLength() {
-				return auxPaths.size();
-			}
-			
-		};
-	}
+            @Override
+            public int getLength() {
+                return auxPaths.size();
+            }
+
+        };
+    }
 }

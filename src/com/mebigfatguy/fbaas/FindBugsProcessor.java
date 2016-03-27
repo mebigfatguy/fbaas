@@ -41,98 +41,97 @@ import edu.umd.cs.findbugs.FindBugs2;
 
 public class FindBugsProcessor implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FindBugsProcessor.class);
-	private final BlockingQueue<Artifact> queue;
-	
-	public FindBugsProcessor(BlockingQueue<Artifact> q) {
-		queue = q;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			LOGGER.info("FindBugsProcessor started.");
-			while (!Thread.interrupted()) {
-				Artifact job = queue.take();
-				
-				if (!Status.isProcessing(job) && !Status.hasReport(job)) {
-				    Status.setProcessing(job);
-    				Path jarDirectory = null;
-    				
-    				try {
-    					jarDirectory = loadJars(job);
-    					
-    					Path fbpFile = buildProjectFile(job, jarDirectory);
-    					File out = Status.getReportFile(job);
-    					
-    					String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString()};
-    					FindBugs2.main(args);
-    					Status.deleteProcessingFile(job);
-    
-    				} catch (Exception e) {
-    				    Status.deleteReport(job);
-    				    Status.setProcessingFailed(job, e);
-    					LOGGER.error("Failed running findbugs on job {}", job, e);
-    				} catch (Throwable t) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FindBugsProcessor.class);
+    private final BlockingQueue<Artifact> queue;
+
+    public FindBugsProcessor(BlockingQueue<Artifact> q) {
+        queue = q;
+    }
+
+    @Override
+    public void run() {
+        try {
+            LOGGER.info("FindBugsProcessor started.");
+            while (!Thread.interrupted()) {
+                Artifact job = queue.take();
+
+                if (!Status.isProcessing(job) && !Status.hasReport(job)) {
+                    Status.setProcessing(job);
+                    Path jarDirectory = null;
+
+                    try {
+                        jarDirectory = loadJars(job);
+
+                        Path fbpFile = buildProjectFile(job, jarDirectory);
+                        File out = Status.getReportFile(job);
+
+                        String[] args = { "-project", fbpFile.toString(), "-xml", "-output", out.toString() };
+                        FindBugs2.main(args);
+                        Status.deleteProcessingFile(job);
+
+                    } catch (Exception e) {
                         Status.deleteReport(job);
-    					LOGGER.error("Failed running findbugs on job {}", job, t);
-    				} finally {
-    					if (jarDirectory != null) {
-    						FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
-    
-    							@Override
-    							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-    								Files.delete(file);
-    								return FileVisitResult.CONTINUE;
-    							}			
-    						};
-    						
-    						Files.walkFileTree(jarDirectory, fv);
-    						Files.delete(jarDirectory);
-    						
-    					}
-    				}
-				}
-			}
-		} catch (InterruptedException | IOException e) {
-			LOGGER.info("FindBugsProcessor stopped.");
-		}
-	}
+                        Status.setProcessingFailed(job, e);
+                        LOGGER.error("Failed running findbugs on job {}", job, e);
+                    } catch (Throwable t) {
+                        Status.deleteReport(job);
+                        LOGGER.error("Failed running findbugs on job {}", job, t);
+                    } finally {
+                        if (jarDirectory != null) {
+                            FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
 
-	private static Path loadJars(Artifact job) throws IOException {
-		
-		Path jarDir = Files.createTempDirectory("fb");
-		
-		PomHandler handler = new PomHandler(job, jarDir);
-		handler.processPom();
-		
-		return jarDir;
-	}
-	
-	
-	private static Path buildProjectFile(Artifact job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
-		final Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
-		final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + ".jar");
-		final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + "-sources.jar");
-		
-		final List<Path> auxList = new ArrayList<Path>();
-		
-		FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
+                                @Override
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                    Files.delete(file);
+                                    return FileVisitResult.CONTINUE;
+                                }
+                            };
 
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				if (!file.equals(jarPath) && (!file.equals(srcPath))) {
-					auxList.add(file);
-				}
-				return FileVisitResult.CONTINUE;
-			}			
-		};
-		
-		Files.walkFileTree(jarDirectory, fv);
-		
-		GenerateFBP gen = new GenerateFBP(jarPath, srcPath, auxList);
-		gen.generate(fbpFile);
+                            Files.walkFileTree(jarDirectory, fv);
+                            Files.delete(jarDirectory);
 
-		return fbpFile;
-	}
+                        }
+                    }
+                }
+            }
+        } catch (InterruptedException | IOException e) {
+            LOGGER.info("FindBugsProcessor stopped.");
+        }
+    }
+
+    private static Path loadJars(Artifact job) throws IOException {
+
+        Path jarDir = Files.createTempDirectory("fb");
+
+        PomHandler handler = new PomHandler(job, jarDir);
+        handler.processPom();
+
+        return jarDir;
+    }
+
+    private static Path buildProjectFile(Artifact job, Path jarDirectory) throws IOException, TransformerException, ParserConfigurationException {
+        final Path fbpFile = Paths.get(jarDirectory.toString(), job.getArtifactId() + ".fbp");
+        final Path jarPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + ".jar");
+        final Path srcPath = Paths.get(jarDirectory.toString(), job.getArtifactId() + '-' + job.getVersion() + "-sources.jar");
+
+        final List<Path> auxList = new ArrayList<Path>();
+
+        FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                if (!file.equals(jarPath) && (!file.equals(srcPath))) {
+                    auxList.add(file);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        };
+
+        Files.walkFileTree(jarDirectory, fv);
+
+        GenerateFBP gen = new GenerateFBP(jarPath, srcPath, auxList);
+        gen.generate(fbpFile);
+
+        return fbpFile;
+    }
 }

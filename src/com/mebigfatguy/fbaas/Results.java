@@ -25,7 +25,7 @@ public class Results {
 
     private String status;
     List<Bug> bugs;
-    
+
     public Results(String status, List<Bug> bugs) {
         this.status = status;
         this.bugs = bugs;
@@ -38,7 +38,7 @@ public class Results {
     public List<Bug> getBugs() {
         return bugs;
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

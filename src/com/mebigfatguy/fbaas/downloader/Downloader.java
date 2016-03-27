@@ -28,53 +28,53 @@ import java.util.Deque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Downloader implements Runnable{
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
-	private static final int DEFAULT_BUFFER_SIZE = 8192;
+public class Downloader implements Runnable {
 
-	private URL srcURL;
-	private Path dstPath;
-	private IOException exception;
-	
-	public Downloader(URL src, Path dst) {
-		
-		srcURL = src;
-		dstPath = dst;
-		exception = null;
-	}
-	
-	@Override
-	public void run() {
-		try (BufferedInputStream bis = new BufferedInputStream(srcURL.openStream());
-			 BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(dstPath))) {
-			
-			Deque<TransferBuffer> dq = new ArrayDeque<TransferBuffer>();
-			BufferReader br = new BufferReader(bis, dq, DEFAULT_BUFFER_SIZE);
-			Thread r = new Thread(br);
-			r.start();
-			
-			BufferWriter bw = new BufferWriter(bos, dq);
-			Thread w = new Thread(bw);
-			w.start();
-			
-			r.join();
-			w.join();
-			
-			br.checkSuccess();
-			bw.checkSuccess();
-		} catch (InterruptedException e) {
-			LOGGER.error("Failed downloading {} to {} - interrupted", srcURL, dstPath, e);
-			exception = new IOException("Failed downloading " + srcURL + " to " + dstPath + " - interrupted");
-		} catch (IOException e) {
-			LOGGER.error("Failed downloading {} to {}", srcURL, dstPath, e);
-			exception = e;
-		}
-	}
-	
-	public void checkSuccess() throws IOException {
-		if (exception != null) {
-			throw exception;
-		}
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    private URL srcURL;
+    private Path dstPath;
+    private IOException exception;
+
+    public Downloader(URL src, Path dst) {
+
+        srcURL = src;
+        dstPath = dst;
+        exception = null;
+    }
+
+    @Override
+    public void run() {
+        try (BufferedInputStream bis = new BufferedInputStream(srcURL.openStream());
+                BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(dstPath))) {
+
+            Deque<TransferBuffer> dq = new ArrayDeque<TransferBuffer>();
+            BufferReader br = new BufferReader(bis, dq, DEFAULT_BUFFER_SIZE);
+            Thread r = new Thread(br);
+            r.start();
+
+            BufferWriter bw = new BufferWriter(bos, dq);
+            Thread w = new Thread(bw);
+            w.start();
+
+            r.join();
+            w.join();
+
+            br.checkSuccess();
+            bw.checkSuccess();
+        } catch (InterruptedException e) {
+            LOGGER.error("Failed downloading {} to {} - interrupted", srcURL, dstPath, e);
+            exception = new IOException("Failed downloading " + srcURL + " to " + dstPath + " - interrupted");
+        } catch (IOException e) {
+            LOGGER.error("Failed downloading {} to {}", srcURL, dstPath, e);
+            exception = e;
+        }
+    }
+
+    public void checkSuccess() throws IOException {
+        if (exception != null) {
+            throw exception;
+        }
+    }
 }

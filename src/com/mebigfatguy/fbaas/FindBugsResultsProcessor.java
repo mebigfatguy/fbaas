@@ -40,7 +40,7 @@ public class FindBugsResultsProcessor {
             if (failure != null) {
                 return new Results(failure, null);
             }
-            
+
             String status = Bundle.getString(locale, Bundle.Processing, job);
             return new Results(status, null);
         }
@@ -48,12 +48,12 @@ public class FindBugsResultsProcessor {
             String status = Bundle.getString(locale, Bundle.Starting, job);
             return new Results(status, null);
         }
-        
+
         String status = Bundle.getString(locale, Bundle.Complete, job);
         List<Bug> bugs = processBugs(job);
         return new Results(status, bugs);
     }
-    
+
     private static List<Bug> processBugs(Artifact job) {
         File reportFile = Status.getReportFile(job);
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(reportFile))) {
@@ -61,51 +61,51 @@ public class FindBugsResultsProcessor {
             XMLReader r = XMLReaderFactory.createXMLReader();
             r.setContentHandler(new BugsHandler(bugs));
             r.parse(new InputSource(bis));
-            
+
             return bugs;
         } catch (SAXException | IOException e) {
             return Collections.emptyList();
         }
     }
-    
+
     private static class BugsHandler extends DefaultHandler {
-        
+
         private List<Bug> bugReport;
         Bug bug;
-        
+
         public BugsHandler(List<Bug> bugs) {
             bugReport = bugs;
         }
-        
+
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
             switch (localName) {
-            case "BugInstance":
-                bug = new Bug();
-                bug.setCategory(attributes.getValue("category"));
-                bug.setType(attributes.getValue("type"));
+                case "BugInstance":
+                    bug = new Bug();
+                    bug.setCategory(attributes.getValue("category"));
+                    bug.setType(attributes.getValue("type"));
                 break;
-                
-            case "Class":
-                bug.setClassName(attributes.getValue("classname"));
+
+                case "Class":
+                    bug.setClassName(attributes.getValue("classname"));
                 break;
-                
-            case "Field":
-            case "Method":
-                bug.setMethodName(attributes.getValue("name"));
+
+                case "Field":
+                case "Method":
+                    bug.setMethodName(attributes.getValue("name"));
                 break;
-                
-            case "SourceLine":
-                try {
-                    bug.setLineStart(Integer.parseInt(attributes.getValue("start")));
-                    bug.setLineEnd(Integer.parseInt(attributes.getValue("end")));
-                } catch (Exception e) {
-                    //ignore
-                }
+
+                case "SourceLine":
+                    try {
+                        bug.setLineStart(Integer.parseInt(attributes.getValue("start")));
+                        bug.setLineEnd(Integer.parseInt(attributes.getValue("end")));
+                    } catch (Exception e) {
+                        // ignore
+                    }
                 break;
             }
         }
-        
+
         @Override
         public void endElement(String uri, String localName, String qName) {
             if ("BugInstance".equals(localName)) {

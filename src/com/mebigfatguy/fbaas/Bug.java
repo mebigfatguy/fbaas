@@ -30,59 +30,59 @@ public class Bug {
     private String fieldName;
     private int lineStart;
     private int lineEnd;
-    
+
     public String getCategory() {
         return category;
     }
-    
+
     public void setCategory(String bugCategory) {
         category = bugCategory;
     }
-    
+
     public String getType() {
         return type;
     }
-    
+
     public void setType(String bugType) {
         type = bugType;
     }
-    
+
     public String getClassName() {
         return className;
     }
-    
+
     public void setClassName(String clsName) {
         className = clsName;
     }
-    
+
     public String getMethodName() {
         return methodName;
     }
-    
+
     public void setMethodName(String methName) {
         methodName = methName;
     }
-    
+
     public String getFieldName() {
         return fieldName;
     }
-    
+
     public void setFieldName(String fldName) {
         fieldName = fldName;
     }
-    
+
     public int getLineStart() {
         return lineStart;
     }
-    
+
     public void setLineStart(int lnStart) {
         lineStart = lnStart;
     }
-    
+
     public int getLineEnd() {
         return lineEnd;
     }
-    
+
     public void setLineEnd(int lnEnd) {
         lineEnd = lnEnd;
     }

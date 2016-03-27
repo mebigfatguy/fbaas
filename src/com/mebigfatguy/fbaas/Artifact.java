@@ -23,33 +23,34 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * a maven artifact
  */
 public class Artifact {
-	private String groupId;
-	private String artifactId;
-	private String version;
-	
-	public Artifact(String groupId, String artifactId, String version) {
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-	}
+    private String groupId;
+    private String artifactId;
+    private String version;
 
-	public String getGroupId() {
-		return groupId;
-	}
+    public Artifact(String groupId, String artifactId, String version) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
+    }
 
-	public String getArtifactId() {
-		return artifactId;
-	}
+    public String getGroupId() {
+        return groupId;
+    }
 
-	public String getVersion() {
-		return version;
-	}
-	
-	public String fileName() {
-	    return groupId + '_' + artifactId + '_' + version + ".xml";
-	}
-	@Override
-	public String toString() {
-	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String fileName() {
+        return groupId + '_' + artifactId + '_' + version + ".xml";
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

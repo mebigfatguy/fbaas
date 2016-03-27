@@ -33,34 +33,34 @@ import com.mebigfatguy.fbaas.FindBugsResultsProcessor;
 import com.mebigfatguy.fbaas.Results;
 import com.mebigfatguy.fbaas.Titles;
 
-
 @Path("/findbugs")
 public class FindBugsResource {
-	
-	@Context 
-	ServletContext context;
-	
-	@GET
-	@Path("/text")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Titles getText(@Context HttpServletRequest request) {
-		return new Titles(request.getLocale());
-	}
-	
-	@GET
-	@Path("/run/{groupId}/{artifactId}/{version}")
-	public Response findBugs(@Context HttpServletRequest request, @PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId, @PathParam("version") String version) {
-		Artifact job = new Artifact(groupId, artifactId, version);
-		
-		FindBugsResultsProcessor processor = (FindBugsResultsProcessor) context.getAttribute("results");
-		Results r = processor.getResults(request.getLocale(), job);
-		
-		if (r.getBugs() == null) {
-    		@SuppressWarnings("unchecked")
-    		Queue<Artifact> queue = (Queue<Artifact>) context.getAttribute("queue");
-    		queue.add(job);
-		}
-		
-		return Response.ok(r).build();
-	}
+
+    @Context
+    ServletContext context;
+
+    @GET
+    @Path("/text")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Titles getText(@Context HttpServletRequest request) {
+        return new Titles(request.getLocale());
+    }
+
+    @GET
+    @Path("/run/{groupId}/{artifactId}/{version}")
+    public Response findBugs(@Context HttpServletRequest request, @PathParam("groupId") String groupId, @PathParam("artifactId") String artifactId,
+            @PathParam("version") String version) {
+        Artifact job = new Artifact(groupId, artifactId, version);
+
+        FindBugsResultsProcessor processor = (FindBugsResultsProcessor) context.getAttribute("results");
+        Results r = processor.getResults(request.getLocale(), job);
+
+        if (r.getBugs() == null) {
+            @SuppressWarnings("unchecked")
+            Queue<Artifact> queue = (Queue<Artifact>) context.getAttribute("queue");
+            queue.add(job);
+        }
+
+        return Response.ok(r).build();
+    }
 }

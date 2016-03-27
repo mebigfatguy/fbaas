@@ -25,22 +25,22 @@ import org.slf4j.LoggerFactory;
 
 public class BufferReader implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BufferReader.class);
-	
-	private final InputStream inputStream;
-	private final Deque<TransferBuffer> deque;
-	private final int bufferSize;
-	private IOException exception;
-	
-	public BufferReader(final InputStream is, Deque<TransferBuffer> dq, int bufSize) {
-		inputStream = is;
-		deque = dq;
-		bufferSize = bufSize;
-		exception = null;
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(BufferReader.class);
 
-	@Override
-	public void run() {
+    private final InputStream inputStream;
+    private final Deque<TransferBuffer> deque;
+    private final int bufferSize;
+    private IOException exception;
+
+    public BufferReader(final InputStream is, Deque<TransferBuffer> dq, int bufSize) {
+        inputStream = is;
+        deque = dq;
+        bufferSize = bufSize;
+        exception = null;
+    }
+
+    @Override
+    public void run() {
         try {
             byte[] buffer = new byte[bufferSize];
             int size = inputStream.read(buffer);
@@ -48,28 +48,28 @@ public class BufferReader implements Runnable {
                 if (size > 0) {
                     TransferBuffer queueBuffer = new TransferBuffer(buffer, size);
                     synchronized (deque) {
-                    	deque.addLast(queueBuffer);
-                    	deque.notifyAll();
+                        deque.addLast(queueBuffer);
+                        deque.notifyAll();
                     }
                     buffer = new byte[bufferSize];
                     size = inputStream.read(buffer);
                 }
             }
         } catch (IOException e) {
-        	LOGGER.error("Failed populating queue from inputstream");
-        	exception = e;
+            LOGGER.error("Failed populating queue from inputstream");
+            exception = e;
         } finally {
             TransferBuffer queueBuffer = new TransferBuffer(null, -1);
             synchronized (deque) {
-            	deque.addLast(queueBuffer);
-            	deque.notifyAll();
+                deque.addLast(queueBuffer);
+                deque.notifyAll();
             }
-        }	
+        }
     }
-	
-	public void checkSuccess() throws IOException {
-		if (exception != null) {
-			throw exception;
-		}
-	}
+
+    public void checkSuccess() throws IOException {
+        if (exception != null) {
+            throw exception;
+        }
+    }
 }
