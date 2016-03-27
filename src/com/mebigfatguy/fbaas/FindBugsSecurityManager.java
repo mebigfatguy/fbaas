@@ -28,88 +28,108 @@ public class FindBugsSecurityManager extends SecurityManager {
 
 	@Override
 	public void checkPermission(Permission perm) {
+	       // allow
 	}
 
 	@Override
 	public void checkPermission(Permission perm, Object context) {
+	       // allow
 	}
 
 	@Override
 	public void checkCreateClassLoader() {
+	       // allow
 	}
 
 	@Override
 	public void checkAccess(Thread t) {
+	       // allow
 	}
 
 	@Override
 	public void checkAccess(ThreadGroup g) {
-
+        // allow
 	}
 
 	@Override
 	public void checkExec(String cmd) {
+	       // allow
 	}
 
 	@Override
 	public void checkLink(String lib) {
+	       // allow
 	}
 
 	@Override
 	public void checkRead(FileDescriptor fd) {
+	       // allow
 	}
 
 	@Override
 	public void checkRead(String file) {
+	       // allow
 	}
 
 	@Override
 	public void checkRead(String file, Object context) {
+	       // allow
 	}
 
 	@Override
 	public void checkWrite(FileDescriptor fd) {
+	       // allow
 	}
 
 	@Override
 	public void checkWrite(String file) {
+	       // allow
 	}
 
 	@Override
 	public void checkDelete(String file) {
+	       // allow
 	}
 
 	@Override
 	public void checkConnect(String host, int port) {
+	       // allow
 	}
 
 	@Override
 	public void checkConnect(String host, int port, Object context) {
+	       // allow
 	}
 
 	@Override
 	public void checkListen(int port) {
+	       // allow
 	}
 
 	@Override
 	public void checkAccept(String host, int port) {
+	       // allow
 	}
 
 	@Override
 	public void checkMulticast(InetAddress maddr) {
+	       // allow
 	}
 
 	@Override
 	@Deprecated
 	public void checkMulticast(InetAddress maddr, byte ttl) {
+	       // allow
 	}
 
 	@Override
 	public void checkPropertiesAccess() {
+	       // allow
 	}
 
 	@Override
 	public void checkPropertyAccess(String key) {
+	       // allow
 	}
 
 	@Override
@@ -120,37 +140,45 @@ public class FindBugsSecurityManager extends SecurityManager {
 
 	@Override
 	public void checkPrintJobAccess() {
+	       // allow
 	}
 
 	@Override
 	@Deprecated
 	public void checkSystemClipboardAccess() {
+	       // allow
 	}
 
 	@Override
 	@Deprecated
 	public void checkAwtEventQueueAccess() {
+	       // allow
 	}
 
 	@Override
 	public void checkPackageAccess(String pkg) {
+	       // allow
 	}
 
 	@Override
 	public void checkPackageDefinition(String pkg) {
+	       // allow
 	}
 
 	@Override
 	public void checkSetFactory() {
+	       // allow
 	}
 
 	@Override
 	@Deprecated
 	public void checkMemberAccess(Class<?> clazz, int which) {
+	       // allow
 	}
 
 	@Override
 	public void checkSecurityAccess(String target) {
+	    // allow
 	}
 
 	@Override
