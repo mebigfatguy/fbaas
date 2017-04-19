@@ -1,23 +1,22 @@
-/** fbaas - FindBugs as a Service. 
- * Copyright 2014 MeBigFatGuy.com 
- * Copyright 2014 Dave Brosius 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+/** fbaas - FindBugs as a Service.
+ * Copyright 2014 MeBigFatGuy.com
+ * Copyright 2014 Dave Brosius
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and limitations 
- * under the License. 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
  */
 package com.mebigfatguy.fbaas.rest;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,7 +58,7 @@ public class WebAppContextListener implements ServletContextListener {
             FindBugsResultsProcessor resultsProcessor = new FindBugsResultsProcessor();
             context.setAttribute("results", resultsProcessor);
 
-            BlockingQueue<Artifact> queue = new ArrayBlockingQueue<Artifact>(10000);
+            BlockingQueue<Artifact> queue = new ArrayBlockingQueue<>(10000);
             context.setAttribute("queue", queue);
 
             processor = new Thread(new FindBugsProcessor(queue));
@@ -94,7 +93,7 @@ public class WebAppContextListener implements ServletContextListener {
             if (!Files.isReadable(jarPath)) {
                 try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
 
-                    try (OutputStream os = new FileOutputStream(jarPath.toString())) {
+                    try (OutputStream os = Files.newOutputStream(jarPath)) {
                         IOUtils.copy(is, os);
                     }
                 }
