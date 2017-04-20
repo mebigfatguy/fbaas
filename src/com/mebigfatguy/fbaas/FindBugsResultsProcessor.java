@@ -17,9 +17,9 @@
 package com.mebigfatguy.fbaas;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,8 +55,8 @@ public class FindBugsResultsProcessor {
     }
 
     private static List<Bug> processBugs(Artifact job) {
-        File reportFile = Status.getReportFile(job);
-        try (BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(reportFile.toPath()))) {
+        Path reportFile = Status.getReportFile(job);
+        try (BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(reportFile))) {
             List<Bug> bugs = new ArrayList<>();
             XMLReader r = XMLReaderFactory.createXMLReader();
             r.setContentHandler(new BugsHandler(bugs));

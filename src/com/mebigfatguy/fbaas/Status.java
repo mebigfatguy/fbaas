@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -94,8 +95,8 @@ public class Status {
         }
     }
 
-    public static File getReportFile(Artifact job) {
-        return new File(REPORT_DIR, job.fileName());
+    public static Path getReportFile(Artifact job) {
+        return new File(REPORT_DIR, job.fileName()).toPath();
     }
 
     public static boolean hasReport(Artifact job) {
