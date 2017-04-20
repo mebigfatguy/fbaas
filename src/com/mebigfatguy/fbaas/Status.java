@@ -72,7 +72,9 @@ public class Status {
     public static void setProcessing(Artifact job) {
         try {
             Path procPath = PROCESSING_DIR.resolve(job.fileName());
-            Files.delete(procPath);
+            if (Files.exists(procPath) && !Files.isDirectory(procPath)) {
+                return;
+            }
             Files.createFile(procPath);
             procPath.toFile().deleteOnExit();
         } catch (IOException e) {
