@@ -122,10 +122,6 @@
 			</fileset>
 		</copy>
 		<copy todir="${war.dir}">
-			<fileset dir="${pages.dir}">
-				<include name="**/*"/>
-			</fileset>
-
 			<fileset dir="${bootstrap.dir}">
 				<include name="**/*"/>
 			</fileset>
