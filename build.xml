@@ -24,13 +24,10 @@
 
 	<property name="src.dir" value="${basedir}/src/main/java" />
 	<property name="resources.dir" value="${basedir}/src/main/resources" />
-	<property name="js.dir" value="${basedir}/js" />
 	<property name="css.dir" value="${basedir}/css" />
 	<property name="img.dir" value="${basedir}/img" />
-	<property name="conf.dir" value="${basedir}/conf" />
 	<property name="target.dir" value="${basedir}/target" />
 	<property name="war.dir" value="${target.dir}/war" />
-	<property name="js.dir" value="${war.dir}/js" />
 	<property name="web-inf.dir" value="${war.dir}/WEB-INF" />
 	<property name="web-inf-lib.dir" value="${web-inf.dir}/lib" />
 	<property name="classes.dir" value="${web-inf.dir}/classes" />
@@ -117,11 +114,6 @@
 				<exclude name="sources/*.jar"/>
 				<exclude name="**/javax.servlet-api-${javax.servlet-api.version}.jar"/>
 				<exclude name="**/fb-contrib-${fb-contrib.version}.jar"/>
-			</fileset>
-		</copy>
-		<copy todir="${war.dir}/js">
-			<fileset dir="${js.dir}">
-				<include name="**/*"/>
 			</fileset>
 		</copy>
 		<copy todir="${classes.dir}">
