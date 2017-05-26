@@ -118,7 +118,7 @@
 			</fileset>
 		</copy>
 		<copy todir="${classes.dir}">
-			<fileset dir="${src.dir}">
+			<fileset dir="${resources.dir}">
 				<include name="**/*.properties"/>
 				<include name="**/*.xsl"/>
 			</fileset>
