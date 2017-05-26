@@ -17,10 +17,10 @@
 		<div class="span12">
 			<table id="artifact" class="table">
 			    <tbody>
-					<tr><td><input id="groupId" type="text"/></td></tr>
-					<tr><td><input id="artifactId" type="text"/></td></tr>
-					<tr><td><input id="version" type="text"/></td></tr>	
-				</tbody>				
+					<tr><td><div class="input-group"><span id="groupIdSpan" class="input-group-addon"></span><input class="form-control" id="groupId" type="text"/></div></td></tr>
+					<tr><td><div class="input-group"><span id="artifactIdSpan" class="input-group-addon"></span><input class="form-control" id="artifactId" type="text"/></div></td></tr>
+					<tr><td><div class="input-group"><span id="versionSpan" class="input-group-addon"></span><input class="form-control" id="version" type="text"/></div></td></tr>	
+				</tbody>	
 			</table>
 			<input class="btn btn-primary btn-lg" type="submit" name="FindBugs" value="FindBugs" id="FindBugs" onClick="javascript:findbugs($( '#groupId' ).val(), $( '#artifactId' ).val(), $( '#version' ).val())"/>
 		</div>

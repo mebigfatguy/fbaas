@@ -5,14 +5,15 @@ $(document).ready(function() {
 		$( 'title' ).append(data.title);
 		$( 'h1' ).append(data.title);
 		$( 'h4' ).append(data.description);
-		$( '#groupId' ).val(data.groupId);
-		$( '#artifactId' ).val(data.artifactId);
-		$( '#version' ).val(data.version);
+		$( '#groupIdSpan' ).append(data.groupId);
+		$( '#artifactIdSpan' ).append(data.artifactId);
+		$( '#versionSpan' ).append(data.version);
 		$( '#category' ).append(data.category);
 		$( '#type' ).append(data.type);
 		$( '#message' ).append(data.message);
 		$( '#fieldmethod' ).append(data.fieldMethod);
 		$( '#location' ).append(data.location);
+		$( '#groupId' ).focus();
 	});
 });
 
