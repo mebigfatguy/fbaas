@@ -90,7 +90,7 @@ public class WebAppContextListener implements ServletContextListener {
             Files.createDirectories(pluginDir);
 
             Path jarPath = pluginDir.resolve(fbJarName);
-            if (!Files.isReadable(jarPath)) {
+            if (Files.isWritable(pluginDir)) {
                 try (InputStream is = WebAppContextListener.class.getResourceAsStream("/" + fbJarName)) {
 
                     try (OutputStream os = Files.newOutputStream(jarPath)) {
