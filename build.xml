@@ -23,6 +23,7 @@
 	<property file="${basedir}/version.properties" />
 
 	<property name="src.dir" value="${basedir}/src/main/java" />
+	<property name="webapp.dir" value="${basedir}/src/main/webapp" />
 	<property name="resources.dir" value="${basedir}/src/main/resources" />
 	<property name="css.dir" value="${basedir}/css" />
 	<property name="img.dir" value="${basedir}/img" />
@@ -104,7 +105,7 @@
 
 	<target name="resources" depends="-init" description="copies resources to the war">
 		<copy todir="${war.dir}">
-			<fileset dir="${resources.dir}">
+			<fileset dir="${webapp.dir}">
 				<include name="**/*"/>
 			</fileset>
 		</copy>
