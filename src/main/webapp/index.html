@@ -9,8 +9,10 @@
 <body>
 
 	<div class="container">
-		<h1></h1>
-		<h4></h4>
+		<div class="jumbotron">
+			<h1></h1>
+			<h4></h4>
+		</div>
 
 		<div class="span12">
 			<table id="artifact" class="table">
@@ -20,12 +22,12 @@
 					<tr><td><input id="version" type="text"/></td></tr>	
 				</tbody>				
 			</table>
-			<input type="submit" name="FindBugs" value="FindBugs" id="FindBugs" onClick="javascript:findbugs($( '#groupId' ).val(), $( '#artifactId' ).val(), $( '#version' ).val())"/>
+			<input class="btn btn-primary btn-lg" type="submit" name="FindBugs" value="FindBugs" id="FindBugs" onClick="javascript:findbugs($( '#groupId' ).val(), $( '#artifactId' ).val(), $( '#version' ).val())"/>
 		</div>
 		
 		<div id="results" class="span12 hide">
 		      <h3></h3>
-		      <table id="bugs" class="table">
+		      <table id="bugs" class="table table-striped">
 		          <thead>
 			          <tr>
 			              <th id="category"/>
