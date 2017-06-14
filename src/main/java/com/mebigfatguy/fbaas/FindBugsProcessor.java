@@ -80,7 +80,7 @@ public class FindBugsProcessor implements Runnable {
                             FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
 
                                 @Override
-                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                                     Files.delete(file);
                                     return FileVisitResult.CONTINUE;
                                 }
