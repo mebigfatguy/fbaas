@@ -3,3 +3,4 @@ lib
 target
 *.class
 version.properties
+.settings/
