@@ -65,6 +65,11 @@ public class GenerateFBP {
             Transformer t = tf.newTransformer(new StreamSource(is));
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setExpandEntityReferences(false);
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document d = db.newDocument();
 
