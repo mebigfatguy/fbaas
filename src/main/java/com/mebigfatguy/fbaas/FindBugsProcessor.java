@@ -120,7 +120,7 @@ public class FindBugsProcessor implements Runnable {
         FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (!file.equals(jarPath) && (!file.equals(srcPath))) {
                     auxList.add(file);
                 }
