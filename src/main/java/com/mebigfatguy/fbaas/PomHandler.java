@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,22 +122,36 @@ public class PomHandler {
                 String innerTag = openTags.remove(openTags.size() - 1);
                 String outerTag = (openTags.size() < 1) ? "" : openTags.get(openTags.size() - 1);
 
-                if (innerTag.equalsIgnoreCase("groupid")) {
-                    groupId = text.toString();
-                } else if (innerTag.equalsIgnoreCase("artifactid")) {
-                    artifactId = text.toString();
-                } else if (innerTag.equalsIgnoreCase("version")) {
-                    version = text.toString();
-                } else if (innerTag.equalsIgnoreCase("dependency")) {
-                    Artifact artifact = new Artifact(groupId, artifactId, version);
-                    downloadJar(substituteProperties(artifact));
-                } else if (innerTag.equalsIgnoreCase("parent")) {
-                    Artifact parentArtifact = new Artifact(groupId, artifactId, version);
-                    PomHandler handler = new PomHandler(parentArtifact, jarDirectory);
-                    handler.processPom();
-                    properties.putAll(handler.properties);
-                } else if (outerTag.equalsIgnoreCase("properties")) {
-                    properties.put(localName, text.toString());
+                switch (innerTag.toLowerCase(Locale.ENGLISH)) {
+                    case "groupid":
+                        groupId = text.toString();
+                    break;
+
+                    case "artifactid":
+                        artifactId = text.toString();
+                    break;
+
+                    case "version":
+                        version = text.toString();
+                    break;
+
+                    case "dependency":
+                        Artifact artifact = new Artifact(groupId, artifactId, version);
+                        downloadJar(substituteProperties(artifact));
+                    break;
+
+                    case "parent":
+                        Artifact parentArtifact = new Artifact(groupId, artifactId, version);
+                        PomHandler handler = new PomHandler(parentArtifact, jarDirectory);
+                        handler.processPom();
+                        properties.putAll(handler.properties);
+                    break;
+
+                    default:
+                        if ("properties".equalsIgnoreCase(outerTag)) {
+                            properties.put(localName, text.toString());
+                        }
+                    break;
                 }
             } catch (IOException e) {
                 throw new SAXException("Failed downloading inner pom: " + groupId + '/' + artifactId + '/' + version, e);
