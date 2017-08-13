@@ -1,18 +1,18 @@
-/** fbaas - FindBugs as a Service. 
- * Copyright 2014-2017 MeBigFatGuy.com 
- * Copyright 2014-2017 Dave Brosius 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+/** fbaas - FindBugs as a Service.
+ * Copyright 2014-2017 MeBigFatGuy.com
+ * Copyright 2014-2017 Dave Brosius
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and limitations 
- * under the License. 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
  */
 package com.mebigfatguy.fbaas.downloader;
 
@@ -25,6 +25,8 @@ import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,7 @@ public class Downloader implements Runnable {
         try (BufferedInputStream bis = new BufferedInputStream(srcURL.openStream());
                 BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(dstPath))) {
 
-            Deque<TransferBuffer> dq = new ArrayDeque<TransferBuffer>();
+            Deque<TransferBuffer> dq = new ArrayDeque<>();
             BufferReader br = new BufferReader(bis, dq, DEFAULT_BUFFER_SIZE);
             Thread r = new Thread(br);
             r.start();
@@ -76,5 +78,10 @@ public class Downloader implements Runnable {
         if (exception != null) {
             throw exception;
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }
