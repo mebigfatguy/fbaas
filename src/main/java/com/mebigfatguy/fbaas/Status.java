@@ -123,6 +123,7 @@ public class Status {
             Path procPath = PROCESSING_DIR.resolve(job.fileName());
             Files.delete(procPath);
         } catch (IOException e) {
+            // what to do, anything
         }
     }
 
@@ -131,6 +132,7 @@ public class Status {
             Path reportPath = REPORT_DIR.resolve(job.fileName());
             Files.delete(reportPath);
         } catch (IOException e) {
+            // what to do, anything
         }
     }
 }
