@@ -1,6 +1,6 @@
 /** fbaas - FindBugs as a Service.
- * Copyright 2014-2018 MeBigFatGuy.com
- * Copyright 2014-2018 Dave Brosius
+ * Copyright 2014-2019 MeBigFatGuy.com
+ * Copyright 2014-2019 Dave Brosius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
